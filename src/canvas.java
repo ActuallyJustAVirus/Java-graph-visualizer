@@ -1,9 +1,9 @@
-import java.text.DecimalFormat;
+// import java.text.DecimalFormat;
 import java.awt.event.*;
-import java.math.BigDecimal;
+// import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.Function;
+// import java.util.function.Function;
 // import java.util.function.Function;
 import java.awt.*;
 
@@ -23,7 +23,7 @@ public class canvas extends JPanel {
     double doty = 0;    
     int mousedownx = -1;
     int mousedowny = -1;
-    graph[] graphs = {new graph("cos(x)*x-x*x", Color.pink)};
+    graph[] graphs = {new graph("cos(x)*x-x*x", Color.red),new graph("cos(x)-x*sin(x)-2*x", Color.blue)};
     JTextField infeild = new JTextField("????????????????????????????????????????");  
     
     public canvas() {
@@ -42,7 +42,7 @@ public class canvas extends JPanel {
                     // zoom = Integer.valueOf(infeild.getText());
                     String text = infeild.getText();
                     if (text.substring(0,0) != "c") {
-                        graphs = addgraph(graphs, new graph(text,Color.red));
+                        graphs = addgraph(graphs, new graph(text,new Color((int)(Math.random() * 0x1000000))));
                         // System.out.println("b");
                     } else {
                         graph[] graphss = {new graph("x*2",Color.MAGENTA)};
@@ -71,25 +71,8 @@ public class canvas extends JPanel {
         g.drawLine(-scrx,0,-scrx,getHeight());//x
         g.drawLine(0,-scry,getWidth(),-scry);//y
 
-        g.setColor(Color.red);
         for (graph graph : graphs) {
             graph.drawgraph(scrx, scrx+getWidth(), zoom, scrx, scry, g);
-        }
-
-        g.setColor(Color.blue);
-        int lastx = 0;
-        int lasty = 0;
-        for (int i = scrx; i < scrx+getWidth(); i++) {
-            int x = i-scrx;
-            int y = (int)-(fm(i/zoom)*zoom+scry);
-            if (y != 0) {
-                g.drawLine(x,y,lastx,lasty);
-                lastx = x;
-                lasty = y;
-            } else {
-                lastx = i-scrx+1;
-                lasty = (int)-(fm((i+1)/zoom)*zoom+scry);
-            }
         }
 
         g.setColor(Color.green);
@@ -110,10 +93,10 @@ public class canvas extends JPanel {
     }
     public double fm(double x) {
         // x = x/zoom;
-        String xx = String.format("%.10f", x);
-        xx = xx.replace(",",".");
-        String test = "cos("+xx+")-"+xx+"*sin("+xx+")-2*"+xx;
-        return math.eval(test);//(Math.cos(x)-x*Math.sin(x)-2*x) // cirkel (2-Math.sqrt(4-Math.pow((x-2),2)))
+        // String xx = String.format("%.10f", x);
+        // xx = xx.replace(",",".");
+        // String test = "cos("+xx+")-"+xx+"*sin("+xx+")-2*"+xx;
+        return (Math.cos(x)-x*Math.sin(x)-2*x);//(Math.cos(x)-x*Math.sin(x)-2*x) // cirkel (2-Math.sqrt(4-Math.pow((x-2),2)))
     }
     public double newton(double x) {
         return (x-f(x)/fm(x));

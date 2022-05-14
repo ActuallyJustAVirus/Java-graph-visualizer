@@ -1,10 +1,10 @@
-import java.awt.event.*;
-import java.util.function.Function;
+// import java.awt.event.*;
+// import java.util.function.Function;
 // import java.util.function.Function;
 import java.awt.*;
 
-import javax.swing.JPanel;
-import java.util.function.Function;
+// import javax.swing.JPanel;
+// import java.util.function.Function;
 
 import javax.swing.JComponent;
 
@@ -21,14 +21,14 @@ public class graph extends JComponent{
         int lasty = 0;
         for (int i = start; i < end; i++) {
             int x = i-scrx;
-            int y = (int)-(f(i/zoom)*zoom+scry);
+            int y = (int)Math.round(-(f(i/zoom)*zoom+scry));
             if (y != 0) {
                 g.drawLine(x,y,lastx,lasty);
                 lastx = x;
                 lasty = y;
             } else {
                 lastx = i-scrx+1;
-                lasty = (int)-(f((i+1)/zoom)*zoom+scry);
+                lasty = (int)Math.round(-(f((i+1)/zoom)*zoom+scry));
             }
         }
     }
