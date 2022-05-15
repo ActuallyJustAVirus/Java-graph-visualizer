@@ -171,6 +171,14 @@ public class canvas extends JPanel {
 		}
 		@Override
 		public void mouseClicked(MouseEvent e) {
+            switch (e.getButton()) {
+                case 2:
+                    dotx = newton(dotx);
+					break;
+				default:
+					// System.out.println(e.getButton());
+					break;
+			}
 		}
 	}
 
@@ -239,7 +247,6 @@ public class canvas extends JPanel {
         if (UP) {
             zoom *= 1.1;
         }
-        dotx = newton(dotx);
         if (M3) {
             PointerInfo mouse = MouseInfo.getPointerInfo();
             Point mousePoint = mouse.getLocation();

@@ -7,14 +7,14 @@ import javax.swing.JFrame;
 
 public class App {
     canvas canvas = new canvas();
-    JFrame frame = new JFrame(":D");
+    JFrame frame = new JFrame("Graph thing :D");
     // JTextField infeild = new JTextField("50");  
     ImageIcon img = new ImageIcon("rsc/icon.png");
     public static void main(String[] args) throws Exception {
         App app = new App();
         while (true) {
             app.tick();
-            Thread.sleep(50);
+            Thread.sleep(60);
         }
     }
     private void tick() {
