@@ -33,7 +33,7 @@ public class graph extends JComponent{
         }
     }
     public double f(double x){
-        String xx = String.format("%.10f", x);
+        String xx = "("+String.format("%.10f", x)+")";
         xx = xx.replace(",",".");
         String fun = function.replace("x",String.valueOf(xx));
         return math.eval(fun);

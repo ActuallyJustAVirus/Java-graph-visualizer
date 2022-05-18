@@ -47,6 +47,7 @@ public class math {
                 for (;;) {
                     if      (eat('*')) x *= parseFactor(); // multiplication
                     else if (eat('/')) x /= parseFactor(); // division
+                    else if (eat('%')) x %= parseFactor(); // mod
                     else return x;
                 }
             }
@@ -76,6 +77,12 @@ public class math {
                     else if (func.equals("sin")) x = Math.sin(x);
                     else if (func.equals("cos")) x = Math.cos(x);
                     else if (func.equals("tan")) x = Math.tan(x);
+                    else if (func.equals("sign")) x = Math.signum(x);
+                    else if (func.equals("abs")) x = Math.abs(x);
+                    else if (func.equals("log")) x = Math.log10(x);
+                    else if (func.equals("round")) x = Math.round(x);
+                    else if (func.equals("floor")) x = Math.floor(x);
+                    else if (func.equals("ceil")) x = Math.ceil(x);
                     else throw new RuntimeException("Unknown function: " + func);
                 } else {
                     throw new RuntimeException("Unexpected: " + (char)ch);
