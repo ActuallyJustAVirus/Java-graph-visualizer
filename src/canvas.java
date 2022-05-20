@@ -12,8 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class canvas extends JPanel {
-    int scrx = -300;
-    int scry = -300;
+    double scrx = -3;
+    double scry = -3;
     float zoom = 50;
     boolean M = false;
     boolean M3 = false;
@@ -56,31 +56,33 @@ public class canvas extends JPanel {
         // System.out.println(val);
     }
     public void paint(Graphics g) {  
+        int paintx = (int) (scrx*zoom)-getWidth()/2;
+        int painty = (int) (scry*zoom)-getHeight()/2;
         g.clearRect(0, 0, getWidth(), getHeight());
         setBackground(Color.white);
 
         double gridsize = Math.pow(10,Math.round(Math.log10((50/zoom))));//String.valueOf((int)Math.floor(100/zoom)).length()-1
         g.setColor(Color.lightGray);
         for (int i = -1; i < Math.ceil(getWidth()/(zoom*gridsize)); i++) {
-            int x = (int) (zoom*gridsize*(i+1)-(scrx%(zoom*gridsize)));
+            int x = (int) (zoom*gridsize*(i+1)-(paintx%(zoom*gridsize)));
             g.drawLine(x, 0,x, getHeight());
         }
         for (int i = -1; i < Math.ceil(getHeight()/(zoom*gridsize)); i++) {
-            int y = (int) (zoom*gridsize*(i)-(scry%(zoom*gridsize)));
+            int y = (int) (zoom*gridsize*(i)-(painty%(zoom*gridsize)));
             g.drawLine(0, y,getWidth(),y);
         }
 
         g.setColor(Color.black);
-        g.drawLine(-scrx,0,-scrx,getHeight());//x
-        g.drawLine(0,-scry,getWidth(),-scry);//y
+        g.drawLine(-paintx,0,-paintx,getHeight());//x
+        g.drawLine(0,-painty,getWidth(),-painty);//y
 
         for (graph graph : graphs) {
-            graph.drawgraph(scrx, scrx+getWidth(), zoom, scrx, scry, g);
+            graph.drawgraph(paintx, paintx+getWidth(), zoom, paintx, painty, g);
         }
 
         g.setColor(Color.green);
         int dotsize = 5;
-        g.fillOval((int) ((dotx)*zoom-scrx-dotsize/2),(int) ((doty)*zoom-scry-dotsize/2), dotsize, dotsize);
+        g.fillOval((int) ((dotx)*zoom-paintx-dotsize/2),(int) ((doty)*zoom-painty-dotsize/2), dotsize, dotsize);
         g.setColor(Color.black);
         g.drawString(String.valueOf(dotx), 10, 10);
         g.drawString("zoom: "+String.valueOf(zoom), 10, 25);
@@ -235,9 +237,9 @@ public class canvas extends JPanel {
                 mousedownx = mousex;
                 mousedowny = mousey;
             }   
-            scrx += mousedownx-mousex;
+            scrx += (mousedownx-mousex)/zoom;
             mousedownx = mousex;
-            scry += mousedowny-mousey;
+            scry += (mousedowny-mousey)/zoom;
             mousedowny = mousey;
             repaint();
         } else {
@@ -246,16 +248,16 @@ public class canvas extends JPanel {
         }
         if (DOWN) {
             zoom /= 1.1;
-            // scrx *= 1.1;
-            // scry *= 1.1;
+            // scrx -= getWidth()*0.1;
+            // scry -= getHeight()*0.1;
             if (zoom<0.001) {
                 zoom = 0.001f;
             }
         }
         if (UP) {
             zoom *= 1.1;
-            // scrx /= 1.1;
-            // scry /= 1.1;
+            // scrx += getWidth()*0.01;
+            // scry += getHeight()*0.01;
         }
         if (M3) {
             PointerInfo mouse = MouseInfo.getPointerInfo();
