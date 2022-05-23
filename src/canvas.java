@@ -12,18 +12,28 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class canvas extends JPanel {
-    double scrx = -3;
-    double scry = -3;
+    double scrx = 0;
+    double scry = 0;
     float zoom = 50;
     boolean M = false;
     boolean M3 = false;
     boolean UP = false;
     boolean DOWN = false;
-    double dotx = 4;
-    double doty = 0;    
+    boolean LEFT = false;
+    boolean RIGHT = false;
+    boolean PAGE_DOWN = false;
+    boolean PAGE_UP = false;
+    // double dotx = 4;
+    // double doty = 0;    
     int mousedownx = -1;
     int mousedowny = -1;
-    graph[] graphs = {new graph("cos(x)*x-x*x", Color.red),new graph("cos(x)-x*sin(x)-2*x", Color.blue)};
+    graph[] graphs = {
+        new graph("cos(x)*x-x*x", Color.red),
+        new graph("cos(x)-x*sin(x)-2*x", Color.blue)
+    };
+    punktermedbernard[] dots = {
+        new punktermedbernard(1, 1, Color.red)
+    };
     JTextField infeild = new JTextField("????????????????????????????????????????");  
     
     public canvas() {
@@ -61,7 +71,7 @@ public class canvas extends JPanel {
         g.clearRect(0, 0, getWidth(), getHeight());
         setBackground(Color.white);
 
-        double gridsize = Math.pow(10,Math.round(Math.log10((50/zoom))));//String.valueOf((int)Math.floor(100/zoom)).length()-1
+        double gridsize = Math.pow(10,Math.round(Math.log10((50/zoom))));
         g.setColor(Color.lightGray);
         for (int i = -1; i < Math.ceil(getWidth()/(zoom*gridsize)); i++) {
             int x = (int) (zoom*gridsize*(i+1)-(paintx%(zoom*gridsize)));
@@ -79,12 +89,15 @@ public class canvas extends JPanel {
         for (graph graph : graphs) {
             graph.drawgraph(paintx, paintx+getWidth(), zoom, paintx, painty, g);
         }
+        for (punktermedbernard dot : dots) {
+            dot.drawdot(zoom, paintx, painty, g);
+        }
 
         g.setColor(Color.green);
-        int dotsize = 5;
-        g.fillOval((int) ((dotx)*zoom-paintx-dotsize/2),(int) ((doty)*zoom-painty-dotsize/2), dotsize, dotsize);
+        // int dotsize = 5;
+        // g.fillOval((int) ((dotx)*zoom-paintx-dotsize/2),(int) ((doty)*zoom-painty-dotsize/2), dotsize, dotsize);
         g.setColor(Color.black);
-        g.drawString(String.valueOf(dotx), 10, 10);
+        // g.drawString(String.valueOf(dotx), 10, 10);
         g.drawString("zoom: "+String.valueOf(zoom), 10, 25);
         g.drawString("gridsize: "+String.valueOf(gridsize), 10, 40);
         g.drawString("scrx: "+String.valueOf(scrx)+" scry: "+String.valueOf(scry), 10, 55);
@@ -181,7 +194,7 @@ public class canvas extends JPanel {
         public void mouseClicked(MouseEvent e) {
             switch (e.getButton()) {
                 case 2:
-                    dotx = newton(dotx);
+                    // dotx = newton(dotx);
                     break;
                 default:
                     // System.out.println(e.getButton());
@@ -199,11 +212,23 @@ public class canvas extends JPanel {
         public void keyPressed(KeyEvent e) {
             // System.out.println(KeyEvent.getKeyText(e.getKeyCode()));
             switch (e.getKeyCode()) {
+                case KeyEvent.VK_PAGE_UP:
+                    PAGE_UP = true;
+                    break;
+                case KeyEvent.VK_PAGE_DOWN:
+                    PAGE_DOWN = true;
+                    break;
                 case KeyEvent.VK_UP:
                     UP = true;
                     break;
                 case KeyEvent.VK_DOWN:
                     DOWN = true;
+                    break;
+                case KeyEvent.VK_LEFT:
+                    LEFT = true;
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    RIGHT = true;
                     break;
                 default:
                     break;
@@ -213,13 +238,26 @@ public class canvas extends JPanel {
         @Override
         public void keyReleased(KeyEvent e) {
             switch (e.getKeyCode()) {
+                case KeyEvent.VK_PAGE_UP:
+                    PAGE_UP = false;
+                    break;
+                case KeyEvent.VK_PAGE_DOWN:
+                    PAGE_DOWN = false;
+                    break;
                 case KeyEvent.VK_UP:
                     UP = false;
                     break;
                 case KeyEvent.VK_DOWN:
                     DOWN = false;
                     break;
+                case KeyEvent.VK_LEFT:
+                    LEFT = false;
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    RIGHT = false;
+                    break;
                 default:
+                    System.out.println("test");
                     break;
             }
         }
@@ -246,25 +284,24 @@ public class canvas extends JPanel {
             mousedownx = -1;
             mousedowny = -1;
         }
-        if (DOWN) {
+        if (PAGE_DOWN) {
             zoom /= 1.1;
-            // scrx -= getWidth()*0.1;
-            // scry -= getHeight()*0.1;
-            if (zoom<0.001) {
-                zoom = 0.001f;
-            }
+            if (zoom<0.001) zoom = 0.001f;
         }
-        if (UP) {
+        if (PAGE_UP) {
             zoom *= 1.1;
-            // scrx += getWidth()*0.01;
-            // scry += getHeight()*0.01;
+            if (zoom>1.0E10) zoom = 1.0E10f;
         }
-        if (M3) {
-            PointerInfo mouse = MouseInfo.getPointerInfo();
-            Point mousePoint = mouse.getLocation();
-            Point screen = getLocationOnScreen();
-            dotx = (mousePoint.getX()-screen.getX()+scrx)/zoom;
-        }
+        if (DOWN) scry += 15/zoom;
+        if (UP) scry -= 15/zoom;
+        if (LEFT) scrx -= 15/zoom;
+        if (RIGHT) scrx += 15/zoom;
+        // if (M3) {
+        //     PointerInfo mouse = MouseInfo.getPointerInfo();
+        //     Point mousePoint = mouse.getLocation();
+        //     Point screen = getLocationOnScreen();
+        //     dotx = (mousePoint.getX()-screen.getX()+scrx)/zoom;
+        // }
         repaint();
     }
     
