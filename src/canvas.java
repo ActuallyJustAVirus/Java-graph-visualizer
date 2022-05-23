@@ -32,7 +32,7 @@ public class canvas extends JPanel {
         new graph("cos(x)-x*sin(x)-2*x", Color.blue)
     };
     punktermedbernard[] dots = {
-        new punktermedbernard(1, 1, Color.red)
+        new punktermedbernard("1", "1", Color.red)
     };
     JTextField infeild = new JTextField("????????????????????????????????????????");  
     
@@ -51,6 +51,7 @@ public class canvas extends JPanel {
                 public void actionPerformed(ActionEvent e){                  
                     // zoom = Integer.valueOf(infeild.getText());
                     String text = infeild.getText();
+                    System.out.println(interpreter.getType(text));
                     if (!text.substring(0,1).equals("c")) {
                         graphs = addgraph(graphs, new graph(text,new Color((int)(Math.random() * 0x1000000))));
                         // System.out.println("b");
@@ -107,17 +108,10 @@ public class canvas extends JPanel {
 
 
     public double f(double x) {
-        // x = x/zoom;
-        // Function ff = new Function("x^2");
-        // Function<Double, Double> ff = xx -> xx / 2;
-        return (Math.cos(x)*x-x*x);//(Math.cos(x)*x-x*x) //upper cirkel (2+Math.sqrt(4-Math.pow((x-2),2)))
+        return (Math.cos(x)*x-x*x);
     }
     public double fm(double x) {
-        // x = x/zoom;
-        // String xx = String.format("%.10f", x);
-        // xx = xx.replace(",",".");
-        // String test = "cos("+xx+")-"+xx+"*sin("+xx+")-2*"+xx;
-        return (Math.cos(x)-x*Math.sin(x)-2*x);//(Math.cos(x)-x*Math.sin(x)-2*x) // cirkel (2-Math.sqrt(4-Math.pow((x-2),2)))
+        return (Math.cos(x)-x*Math.sin(x)-2*x);
     }
     public double newton(double x) {
         return (x-f(x)/fm(x));
