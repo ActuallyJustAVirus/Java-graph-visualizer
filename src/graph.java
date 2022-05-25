@@ -6,16 +6,17 @@ import java.awt.*;
 // import javax.swing.JPanel;
 // import java.util.function.Function;
 
-import javax.swing.JComponent;
-
-public class graph extends JComponent{
+public class graph extends element{
+    final static boolean drawable = true;
+    String name;
     String function;
     Color color;
     public graph(String function, Color color){
         this.function = function;
         this.color = color;
     }
-    public void drawgraph(int start,int end, float zoom,int scrx,int scry,Graphics g){
+    @Override
+    public void draw(int start,int end, float zoom,int scrx,int scry,Graphics g){
         g.setColor(color);
         int lastx = 0;
         int lasty = 0;
@@ -36,6 +37,6 @@ public class graph extends JComponent{
         String xx = "("+String.format("%.10f", x)+")";
         xx = xx.replace(",",".");
         String fun = function.replace("x",String.valueOf(xx));
-        return math.eval(fun);
+        return eng.eval(fun);
     }
 }

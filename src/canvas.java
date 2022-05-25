@@ -12,18 +12,26 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class canvas extends JPanel {
-    int scrx = -300;
-    int scry = -300;
+    double scrx = 0;
+    double scry = 0;
     float zoom = 50;
     boolean M = false;
     boolean M3 = false;
     boolean UP = false;
     boolean DOWN = false;
-    double dotx = 4;
-    double doty = 0;    
+    boolean LEFT = false;
+    boolean RIGHT = false;
+    boolean PAGE_DOWN = false;
+    boolean PAGE_UP = false;
+    // double dotx = 4;
+    // double doty = 0;    
     int mousedownx = -1;
     int mousedowny = -1;
-    graph[] graphs = {new graph("cos(x)*x-x*x", Color.red),new graph("cos(x)-x*sin(x)-2*x", Color.blue)};
+    element[] elements = {
+        new graph("cos(x)*x-x*x", Color.red),
+        new graph("cos(x)-x*sin(x)-2*x", Color.blue),
+        new punktermedbernard("1", "1", Color.red)
+    };
     JTextField infeild = new JTextField("????????????????????????????????????????");  
     
     public canvas() {
@@ -41,12 +49,12 @@ public class canvas extends JPanel {
                 public void actionPerformed(ActionEvent e){                  
                     // zoom = Integer.valueOf(infeild.getText());
                     String text = infeild.getText();
+                    System.out.println(eng.getType(text));
                     if (!text.substring(0,1).equals("c")) {
-                        graphs = addgraph(graphs, new graph(text,new Color((int)(Math.random() * 0x1000000))));
+                        elements = addelement(elements, eng.getType(text));
                         // System.out.println("b");
                     } else {
-                        graph[] graphss = {new graph("0",Color.black)};
-                        graphs = graphss;
+                        elements = new element[] {new graph("0",Color.black)};
                     }
                 }
             }
@@ -56,60 +64,54 @@ public class canvas extends JPanel {
         // System.out.println(val);
     }
     public void paint(Graphics g) {  
+        int paintx = (int) (scrx*zoom)-getWidth()/2;
+        int painty = (int) (scry*zoom)-getHeight()/2;
         g.clearRect(0, 0, getWidth(), getHeight());
         setBackground(Color.white);
 
-        double gridsize = Math.pow(10,Math.round(Math.log10((50/zoom))));//String.valueOf((int)Math.floor(100/zoom)).length()-1
+        double gridsize = Math.pow(10,Math.round(Math.log10((50/zoom))));
         g.setColor(Color.lightGray);
         for (int i = -1; i < Math.ceil(getWidth()/(zoom*gridsize)); i++) {
-            int x = (int) (zoom*gridsize*(i+1)-(scrx%(zoom*gridsize)));
+            int x = (int) (zoom*gridsize*(i+1)-(paintx%(zoom*gridsize)));
             g.drawLine(x, 0,x, getHeight());
         }
         for (int i = -1; i < Math.ceil(getHeight()/(zoom*gridsize)); i++) {
-            int y = (int) (zoom*gridsize*(i)-(scry%(zoom*gridsize)));
+            int y = (int) (zoom*gridsize*(i)-(painty%(zoom*gridsize)));
             g.drawLine(0, y,getWidth(),y);
         }
 
         g.setColor(Color.black);
-        g.drawLine(-scrx,0,-scrx,getHeight());//x
-        g.drawLine(0,-scry,getWidth(),-scry);//y
+        g.drawLine(-paintx,0,-paintx,getHeight());//x
+        g.drawLine(0,-painty,getWidth(),-painty);//y
 
-        for (graph graph : graphs) {
-            graph.drawgraph(scrx, scrx+getWidth(), zoom, scrx, scry, g);
+        for (element element : elements) {
+            element.draw(paintx, paintx+getWidth(), zoom, paintx, painty, g);
         }
 
-        g.setColor(Color.green);
-        int dotsize = 5;
-        g.fillOval((int) ((dotx)*zoom-scrx-dotsize/2),(int) ((doty)*zoom-scry-dotsize/2), dotsize, dotsize);
         g.setColor(Color.black);
-        g.drawString(String.valueOf(dotx), 10, 10);
         g.drawString("zoom: "+String.valueOf(zoom), 10, 25);
         g.drawString("gridsize: "+String.valueOf(gridsize), 10, 40);
         g.drawString("scrx: "+String.valueOf(scrx)+" scry: "+String.valueOf(scry), 10, 55);
         infeild.repaint();
     }
+    public static double getvalue(String name) {
+        return 1;
+    }
 
 
 
     public double f(double x) {
-        // x = x/zoom;
-        // Function ff = new Function("x^2");
-        // Function<Double, Double> ff = xx -> xx / 2;
-        return (Math.cos(x)*x-x*x);//(Math.cos(x)*x-x*x) //upper cirkel (2+Math.sqrt(4-Math.pow((x-2),2)))
+        return (Math.cos(x)*x-x*x);
     }
     public double fm(double x) {
-        // x = x/zoom;
-        // String xx = String.format("%.10f", x);
-        // xx = xx.replace(",",".");
-        // String test = "cos("+xx+")-"+xx+"*sin("+xx+")-2*"+xx;
-        return (Math.cos(x)-x*Math.sin(x)-2*x);//(Math.cos(x)-x*Math.sin(x)-2*x) // cirkel (2-Math.sqrt(4-Math.pow((x-2),2)))
+        return (Math.cos(x)-x*Math.sin(x)-2*x);
     }
     public double newton(double x) {
         return (x-f(x)/fm(x));
     }
 
-    public graph[] addgraph(graph[] old,graph toadd){
-        ArrayList<graph> gamer = new ArrayList<graph>(Arrays.asList(old));
+    public element[] addelement(element[] old,element toadd){
+        ArrayList<element> gamer = new ArrayList<element>(Arrays.asList(old));
         gamer.add(toadd);
         old = gamer.toArray(old);
         return old;
@@ -179,7 +181,7 @@ public class canvas extends JPanel {
         public void mouseClicked(MouseEvent e) {
             switch (e.getButton()) {
                 case 2:
-                    dotx = newton(dotx);
+                    // dotx = newton(dotx);
                     break;
                 default:
                     // System.out.println(e.getButton());
@@ -197,11 +199,23 @@ public class canvas extends JPanel {
         public void keyPressed(KeyEvent e) {
             // System.out.println(KeyEvent.getKeyText(e.getKeyCode()));
             switch (e.getKeyCode()) {
+                case KeyEvent.VK_PAGE_UP:
+                    PAGE_UP = true;
+                    break;
+                case KeyEvent.VK_PAGE_DOWN:
+                    PAGE_DOWN = true;
+                    break;
                 case KeyEvent.VK_UP:
                     UP = true;
                     break;
                 case KeyEvent.VK_DOWN:
                     DOWN = true;
+                    break;
+                case KeyEvent.VK_LEFT:
+                    LEFT = true;
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    RIGHT = true;
                     break;
                 default:
                     break;
@@ -211,13 +225,26 @@ public class canvas extends JPanel {
         @Override
         public void keyReleased(KeyEvent e) {
             switch (e.getKeyCode()) {
+                case KeyEvent.VK_PAGE_UP:
+                    PAGE_UP = false;
+                    break;
+                case KeyEvent.VK_PAGE_DOWN:
+                    PAGE_DOWN = false;
+                    break;
                 case KeyEvent.VK_UP:
                     UP = false;
                     break;
                 case KeyEvent.VK_DOWN:
                     DOWN = false;
                     break;
+                case KeyEvent.VK_LEFT:
+                    LEFT = false;
+                    break;
+                case KeyEvent.VK_RIGHT:
+                    RIGHT = false;
+                    break;
                 default:
+                    System.out.println("test");
                     break;
             }
         }
@@ -235,34 +262,33 @@ public class canvas extends JPanel {
                 mousedownx = mousex;
                 mousedowny = mousey;
             }   
-            scrx += mousedownx-mousex;
+            scrx += (mousedownx-mousex)/zoom;
             mousedownx = mousex;
-            scry += mousedowny-mousey;
+            scry += (mousedowny-mousey)/zoom;
             mousedowny = mousey;
             repaint();
         } else {
             mousedownx = -1;
             mousedowny = -1;
         }
-        if (DOWN) {
+        if (DOWN) scry += 15/zoom;
+        if (UP) scry -= 15/zoom;
+        if (LEFT) scrx -= 15/zoom;
+        if (RIGHT) scrx += 15/zoom;
+        if (PAGE_DOWN) {
             zoom /= 1.1;
-            // scrx *= 1.1;
-            // scry *= 1.1;
-            if (zoom<0.001) {
-                zoom = 0.001f;
-            }
+            if (zoom<0.001) zoom = 0.001f;
         }
-        if (UP) {
+        if (PAGE_UP) {
             zoom *= 1.1;
-            // scrx /= 1.1;
-            // scry /= 1.1;
+            if (zoom>1.0E10) zoom = 1.0E10f;
         }
-        if (M3) {
-            PointerInfo mouse = MouseInfo.getPointerInfo();
-            Point mousePoint = mouse.getLocation();
-            Point screen = getLocationOnScreen();
-            dotx = (mousePoint.getX()-screen.getX()+scrx)/zoom;
-        }
+        // if (M3) {
+        //     PointerInfo mouse = MouseInfo.getPointerInfo();
+        //     Point mousePoint = mouse.getLocation();
+        //     Point screen = getLocationOnScreen();
+        //     dotx = (mousePoint.getX()-screen.getX()+scrx)/zoom;
+        // }
         repaint();
     }
     
