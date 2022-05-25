@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 
 public class App {
     canvas canvas = new canvas();
-    JFrame frame = new JFrame("Graph thing :D");
+    JFrame frame = new JFrame("GeoMaster :D");
     // JTextField infeild = new JTextField("50");  
     ImageIcon img = new ImageIcon("rsc/icon.png");
     public static void main(String[] args) throws Exception {

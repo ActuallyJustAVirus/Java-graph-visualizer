@@ -27,11 +27,9 @@ public class canvas extends JPanel {
     // double doty = 0;    
     int mousedownx = -1;
     int mousedowny = -1;
-    graph[] graphs = {
+    element[] elements = {
         new graph("cos(x)*x-x*x", Color.red),
-        new graph("cos(x)-x*sin(x)-2*x", Color.blue)
-    };
-    punktermedbernard[] dots = {
+        new graph("cos(x)-x*sin(x)-2*x", Color.blue),
         new punktermedbernard("1", "1", Color.red)
     };
     JTextField infeild = new JTextField("????????????????????????????????????????");  
@@ -51,13 +49,12 @@ public class canvas extends JPanel {
                 public void actionPerformed(ActionEvent e){                  
                     // zoom = Integer.valueOf(infeild.getText());
                     String text = infeild.getText();
-                    System.out.println(interpreter.getType(text));
+                    System.out.println(eng.getType(text));
                     if (!text.substring(0,1).equals("c")) {
-                        graphs = addgraph(graphs, new graph(text,new Color((int)(Math.random() * 0x1000000))));
+                        elements = addelement(elements, eng.getType(text));
                         // System.out.println("b");
                     } else {
-                        graph[] graphss = {new graph("0",Color.black)};
-                        graphs = graphss;
+                        elements = new element[] {new graph("0",Color.black)};
                     }
                 }
             }
@@ -87,22 +84,18 @@ public class canvas extends JPanel {
         g.drawLine(-paintx,0,-paintx,getHeight());//x
         g.drawLine(0,-painty,getWidth(),-painty);//y
 
-        for (graph graph : graphs) {
-            graph.drawgraph(paintx, paintx+getWidth(), zoom, paintx, painty, g);
-        }
-        for (punktermedbernard dot : dots) {
-            dot.drawdot(zoom, paintx, painty, g);
+        for (element element : elements) {
+            element.draw(paintx, paintx+getWidth(), zoom, paintx, painty, g);
         }
 
-        g.setColor(Color.green);
-        // int dotsize = 5;
-        // g.fillOval((int) ((dotx)*zoom-paintx-dotsize/2),(int) ((doty)*zoom-painty-dotsize/2), dotsize, dotsize);
         g.setColor(Color.black);
-        // g.drawString(String.valueOf(dotx), 10, 10);
         g.drawString("zoom: "+String.valueOf(zoom), 10, 25);
         g.drawString("gridsize: "+String.valueOf(gridsize), 10, 40);
         g.drawString("scrx: "+String.valueOf(scrx)+" scry: "+String.valueOf(scry), 10, 55);
         infeild.repaint();
+    }
+    public static double getvalue(String name) {
+        return 1;
     }
 
 
@@ -117,8 +110,8 @@ public class canvas extends JPanel {
         return (x-f(x)/fm(x));
     }
 
-    public graph[] addgraph(graph[] old,graph toadd){
-        ArrayList<graph> gamer = new ArrayList<graph>(Arrays.asList(old));
+    public element[] addelement(element[] old,element toadd){
+        ArrayList<element> gamer = new ArrayList<element>(Arrays.asList(old));
         gamer.add(toadd);
         old = gamer.toArray(old);
         return old;
@@ -278,6 +271,10 @@ public class canvas extends JPanel {
             mousedownx = -1;
             mousedowny = -1;
         }
+        if (DOWN) scry += 15/zoom;
+        if (UP) scry -= 15/zoom;
+        if (LEFT) scrx -= 15/zoom;
+        if (RIGHT) scrx += 15/zoom;
         if (PAGE_DOWN) {
             zoom /= 1.1;
             if (zoom<0.001) zoom = 0.001f;
@@ -286,10 +283,6 @@ public class canvas extends JPanel {
             zoom *= 1.1;
             if (zoom>1.0E10) zoom = 1.0E10f;
         }
-        if (DOWN) scry += 15/zoom;
-        if (UP) scry -= 15/zoom;
-        if (LEFT) scrx -= 15/zoom;
-        if (RIGHT) scrx += 15/zoom;
         // if (M3) {
         //     PointerInfo mouse = MouseInfo.getPointerInfo();
         //     Point mousePoint = mouse.getLocation();
