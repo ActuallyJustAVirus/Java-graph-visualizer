@@ -1,15 +1,8 @@
-// import java.awt.event.*;
-// import java.util.function.Function;
-// import java.util.function.Function;
 import java.awt.*;
-
-// import javax.swing.JPanel;
-// import java.util.function.Function;
 
 public class graph extends element{
     final static boolean drawable = true;
     String function;
-    Color color;
     public graph(String name, String function, Color color){
         this.function = function;
         this.color = color;

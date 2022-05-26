@@ -5,7 +5,6 @@ public class punktermedbernard extends element {
     final static boolean drawable = true;
     String x;
     String y;
-    Color color;
     public punktermedbernard(String name, String x, String y, Color color) {
         this.x = x;
         this.y = y;
