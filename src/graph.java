@@ -11,9 +11,10 @@ public class graph extends element{
     String name;
     String function;
     Color color;
-    public graph(String function, Color color){
+    public graph(String name, String function, Color color){
         this.function = function;
         this.color = color;
+        this.name = name;
     }
     @Override
     public void draw(int start,int end, float zoom,int scrx,int scry,Graphics g){

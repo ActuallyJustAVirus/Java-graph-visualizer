@@ -7,9 +7,10 @@ public class punktermedbernard extends element {
     String x;
     String y;
     Color color;
-    public punktermedbernard(String x, String y, Color color) {
+    public punktermedbernard(String name, String x, String y, Color color) {
         this.x = x;
         this.y = y;
+        this.name = name;
         this.color = color;
     }
     @Override

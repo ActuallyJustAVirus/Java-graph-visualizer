@@ -27,10 +27,11 @@ public class canvas extends JPanel {
     // double doty = 0;    
     int mousedownx = -1;
     int mousedowny = -1;
-    element[] elements = {
-        new graph("cos(x)*x-x*x", Color.red),
-        new graph("cos(x)-x*sin(x)-2*x", Color.blue),
-        new punktermedbernard("1", "1", Color.red)
+    static element[] elements = {
+        new graph("f","cos(x)*x-x*x", Color.red),
+        new graph("fm","cos(x)-x*sin(x)-2*x", Color.blue),
+        new punktermedbernard("A","1", "1", Color.red),
+        eng.createvariable("test", "-2.3")
     };
     JTextField infeild = new JTextField("????????????????????????????????????????");  
     
@@ -50,11 +51,12 @@ public class canvas extends JPanel {
                     // zoom = Integer.valueOf(infeild.getText());
                     String text = infeild.getText();
                     System.out.println(eng.getType(text));
-                    if (!text.substring(0,1).equals("c")) {
+                    if (!text.substring(0,2).equals("cl")) {
                         elements = addelement(elements, eng.getType(text));
                         // System.out.println("b");
                     } else {
-                        elements = new element[] {new graph("0",Color.black)};
+                        elements = new element[] {new graph("v","0",Color.black)};
+                        eng.clearall();
                     }
                 }
             }
@@ -95,7 +97,15 @@ public class canvas extends JPanel {
         infeild.repaint();
     }
     public static double getvalue(String name) {
-        return 1;
+        for (int i = 0; i < elements.length; i++) {
+            if (elements[i] instanceof variable) {
+                variable var = (variable) elements[i];
+                if (var.name.equals(name)) {
+                    return var.getvalue();
+                } 
+            }
+        }
+        throw new RuntimeException("No variable called: " + name);
     }
 
 

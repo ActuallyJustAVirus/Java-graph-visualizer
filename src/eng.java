@@ -2,6 +2,8 @@
 // import java.util.ArrayList;
 // import java.util.Arrays;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class eng {
     String[] types = {
@@ -10,29 +12,39 @@ public class eng {
         "variable",
         "eqution"
     };
-    private static String[] variabels = {};
+    private static ArrayList<String> variabels = new ArrayList<String>();
 
     public static element getType(String input) {
-        // if (input.equals("clear")) {
-        //     return new element();
-        // }
-        if (input.contains(",")) {
-            return createPoint(input);
+        String name;
+        if (input.contains("=")) {
+            String[] elements = input.split("=");
+            name = elements[0];
+            input = elements[1];
+        } else {
+            name = "arg";
         }
-        return createfun(input);
+        if (input.contains(",")) {
+            return createPoint(name,input);
+        }
+        return createfunction(name,input);
     }
     
-    public final static punktermedbernard createPoint(String input) {
+    public final static punktermedbernard createPoint(String name, String input) {
         Color color = new Color((int)(Math.random() * 0x1000000));
         String[] vals = input.split(",");
         vals[0] = vals[0].substring(1);
         vals[1] = vals[1].substring(0,vals[1].length()-1);
-        return new punktermedbernard(vals[0], vals[1], color);
+        return new punktermedbernard(name, vals[0], vals[1], color);
     }
 
-    public final static graph createfun(String input) {
+    public final static graph createfunction(String name, String input) {
         Color color = new Color((int)(Math.random() * 0x1000000));
-        return new graph(input, color);
+        return new graph(name, input, color);
+    }
+
+    public final static variable createvariable(String name, String input) {
+        variabels.add(name);
+        return new variable(name,input);
     }
 
     public static double eval(final String str) { // original code by boann
@@ -117,7 +129,7 @@ public class eng {
                     } else {
                         if (func.equals("pi")) x = 3.14159265359;
                         else if (func.equals("e")) x = 2.71828182846;
-                        else if (func.equals(variabels[0])) x = canvas.getvalue(func);
+                        else if (variabels.contains(func)) x = canvas.getvalue(func);
                         else throw new RuntimeException("Unknown variable: " + func);
                     }
                 } else {
@@ -130,9 +142,11 @@ public class eng {
             }
         }.parse();
     }
-    // public static String[] getVariabals(String input) {
-    //     return
-    // }
+
+    public final static void clearall() {
+        variabels = new ArrayList<String>();
+    }
+
     public static <T> boolean contains(final T[] array, final T v) {
         if (array instanceof graph[]) {
             
