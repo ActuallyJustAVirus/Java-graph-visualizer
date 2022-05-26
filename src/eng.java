@@ -3,7 +3,7 @@
 // import java.util.Arrays;
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.Arrays;
+// import java.util.Arrays;
 
 public class eng {
     String[] types = {
@@ -13,15 +13,23 @@ public class eng {
         "eqution"
     };
     private static ArrayList<String> variabels = new ArrayList<String>();
+    private static ArrayList<String> points = new ArrayList<String>();
+    private static ArrayList<String> functions = new ArrayList<String>();
 
     public static element getType(String input) {
-        String name;
+        String name = "nulll";
         if (input.contains("=")) {
             String[] elements = input.split("=");
             name = elements[0];
             input = elements[1];
         } else {
-            name = "arg";
+            for (char i = 'a'; i < 'z'; i++) {
+                String letter = new String(new char[] {i});
+                if (!variabels.contains(letter)) {
+                    name = letter;
+                    break;
+                }
+            }
         }
         if (input.contains(",")) {
             return createPoint(name,input);
@@ -34,11 +42,13 @@ public class eng {
         String[] vals = input.split(",");
         vals[0] = vals[0].substring(1);
         vals[1] = vals[1].substring(0,vals[1].length()-1);
+        points.add(name);
         return new punktermedbernard(name, vals[0], vals[1], color);
     }
 
     public final static graph createfunction(String name, String input) {
         Color color = new Color((int)(Math.random() * 0x1000000));
+        functions.add(name);
         return new graph(name, input, color);
     }
 
@@ -145,6 +155,8 @@ public class eng {
 
     public final static void clearall() {
         variabels = new ArrayList<String>();
+        functions = new ArrayList<String>();
+        points = new ArrayList<String>();
     }
 
     public static <T> boolean contains(final T[] array, final T v) {

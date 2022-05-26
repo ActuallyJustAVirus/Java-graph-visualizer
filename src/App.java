@@ -2,12 +2,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 // import javax.swing.JTextField;
 // import java.awt.event.*;
-// import java.awt.*;
+import java.awt.*;
 // import javax.swing.event.MouseInputListener;
 
 public class App {
     canvas canvas = new canvas();
     JFrame frame = new JFrame("GeoMaster :D");
+    toolbar toolbar = new toolbar();
     // JTextField infeild = new JTextField("50");  
     ImageIcon img = new ImageIcon("rsc/icon.png");
     public static void main(String[] args) throws Exception {
@@ -24,7 +25,7 @@ public class App {
               
         frame.setIconImage(img.getImage());
         // canvas.add(infeild);
-        frame.add(canvas);
+        frame.add(canvas, BorderLayout.CENTER);frame.add(toolbar, BorderLayout.NORTH);
         frame.setSize(614, 637);
 		frame.setVisible(true);
         // frame.setLayout(null);

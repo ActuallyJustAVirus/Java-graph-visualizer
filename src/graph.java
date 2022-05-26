@@ -8,7 +8,6 @@ import java.awt.*;
 
 public class graph extends element{
     final static boolean drawable = true;
-    String name;
     String function;
     Color color;
     public graph(String name, String function, Color color){

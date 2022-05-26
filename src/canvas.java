@@ -1,14 +1,8 @@
-// import java.text.DecimalFormat;
 import java.awt.event.*;
-// import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-// import java.util.function.Function;
-// import java.util.function.Function;
 import java.awt.*;
-
 import javax.swing.JPanel;
-// import javax.swing.event.MouseInputListener;
 import javax.swing.JTextField;
 
 public class canvas extends JPanel {
@@ -28,9 +22,9 @@ public class canvas extends JPanel {
     int mousedownx = -1;
     int mousedowny = -1;
     static element[] elements = {
-        new graph("f","cos(x)*x-x*x", Color.red),
-        new graph("fm","cos(x)-x*sin(x)-2*x", Color.blue),
-        new punktermedbernard("A","1", "1", Color.red),
+        eng.createfunction("f", "cos(x)*x-x*x"),
+        eng.createfunction("fm", "cos(x)-x*sin(x)-2*x"),
+        eng.createPoint("A", "(1,1)"),
         eng.createvariable("test", "-2.3")
     };
     JTextField infeild = new JTextField("????????????????????????????????????????");  
@@ -191,7 +185,7 @@ public class canvas extends JPanel {
         public void mouseClicked(MouseEvent e) {
             switch (e.getButton()) {
                 case 2:
-                    // dotx = newton(dotx);
+                    
                     break;
                 default:
                     // System.out.println(e.getButton());
@@ -226,6 +220,9 @@ public class canvas extends JPanel {
                     break;
                 case KeyEvent.VK_RIGHT:
                     RIGHT = true;
+                    break;
+                case KeyEvent.VK_PLUS:
+                    list.name();
                     break;
                 default:
                     break;

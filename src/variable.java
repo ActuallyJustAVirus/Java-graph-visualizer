@@ -1,6 +1,5 @@
 public class variable extends element{
     final static boolean drawable = false;
-    String name;
     String value;
     public variable(String name, String value) {
         this.name = name;

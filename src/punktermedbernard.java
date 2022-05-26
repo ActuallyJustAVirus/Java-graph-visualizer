@@ -3,7 +3,6 @@ import java.awt.*;
 public class punktermedbernard extends element {
     final static int size = 5;
     final static boolean drawable = true;
-    String name;
     String x;
     String y;
     Color color;

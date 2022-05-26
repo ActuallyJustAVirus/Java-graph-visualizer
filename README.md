@@ -1,2 +1,2 @@
-## Java graph visualizer
-Uses java to dispalay a graph
+## GeoMaster
+A Java graph visualizer
