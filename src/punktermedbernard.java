@@ -16,4 +16,12 @@ public class punktermedbernard extends element {
         g.setColor(color);
         g.fillOval((int) ((eng.eval(x))*zoom-scrx-size/2),(int) (-(eng.eval(y))*zoom-scry-size/2), size, size);
     }
+    @Override
+    public String getName() {
+        return name;
+    }
+    @Override
+    public String getFun() {
+        return "("+x+","+y+")";
+    }
 }

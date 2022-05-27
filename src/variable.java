@@ -8,4 +8,12 @@ public class variable extends element{
     public double getvalue() {
         return eng.eval(value);
     }
+    @Override
+    public String getName() {
+        return name;
+    }
+    @Override
+    public String getFun() {
+        return value;
+    }
 }

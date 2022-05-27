@@ -13,7 +13,6 @@ public class toolbar extends JComponent{
     }
     @Override
     public void paint(Graphics g) {
-        // TODO Auto-generated method stub
         super.paint(g);
         g.fillOval(getX(), getY(), getWidth(), getHeight());
     }
@@ -22,12 +21,13 @@ class tool extends JButton{
     public tool(String name, String imagepath) {
         setName(name);
         setIcon(new ImageIcon(imagepath));
+        setFocusable(false);
         // putClientProperty("JComponent.sizeVariant", "large");
         // setSize(100, 100);
     }
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        g.fillOval(getX(), getY(), getWidth(), getHeight());
+        // g.fillOval(0, 0, getWidth(), getHeight());
     }
 }

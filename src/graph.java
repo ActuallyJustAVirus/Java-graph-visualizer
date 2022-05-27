@@ -27,9 +27,17 @@ public class graph extends element{
         }
     }
     public double f(double x){
-        String xx = "("+String.format("%.10f", x)+")";
-        xx = xx.replace(",",".");
-        String fun = function.replace("x",String.valueOf(xx));
+        String strx = "("+String.format("%.10f", x)+")";
+        strx = strx.replace(",",".");
+        String fun = function.replace("x",String.valueOf(strx));
         return eng.eval(fun);
+    }
+    @Override
+    public String getName() {
+        return name+"(x)";
+    }
+    @Override
+    public String getFun() {
+        return function;
     }
 }

@@ -44,12 +44,14 @@ public class canvas extends JPanel {
                 public void actionPerformed(ActionEvent e){                  
                     // zoom = Integer.valueOf(infeild.getText());
                     String text = infeild.getText();
-                    System.out.println(eng.getType(text));
-                    if (!text.substring(0,2).equals("cl")) {
-                        elements = addelement(elements, eng.getType(text));
+                    element newElement = eng.getType(text);
+                    System.out.println(newElement);
+                    if (!text.equals("clear")) {
+                        elements = addelement(elements, newElement);
+                        list.add(newElement);
                         // System.out.println("b");
                     } else {
-                        elements = new element[] {new graph("v","0",Color.black)};
+                        elements = new element[] {new graph("verylongbadname","0",Color.black)};
                         eng.clearall();
                     }
                 }
@@ -300,9 +302,3 @@ public class canvas extends JPanel {
     }
     
 }
-// class graph {
-//     public double f(double x) {
-//         x = x/50;
-//         return (Math.cos(x)*x-x*x)*50;
-//     }
-// }

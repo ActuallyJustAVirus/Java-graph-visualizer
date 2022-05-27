@@ -22,10 +22,11 @@ public class eng {
             String[] elements = input.split("=");
             name = elements[0];
             input = elements[1];
+            return createvariable(name, input);
         } else {
             for (char i = 'a'; i < 'z'; i++) {
                 String letter = new String(new char[] {i});
-                if (!variabels.contains(letter)) {
+                if ((!variabels.contains(letter)) && (!points.contains(letter)) && (!functions.contains(letter))) {
                     name = letter;
                     break;
                 }
