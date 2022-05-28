@@ -143,6 +143,7 @@ public class eng {
                         else if (func.equals("round")) x = Math.round(x);
                         else if (func.equals("floor")) x = Math.floor(x);
                         else if (func.equals("ceil")) x = Math.ceil(x);
+                        else if (functions.contains(func)) x = canvas.getvalue(func,x);
                         else throw new RuntimeException("Unknown function: " + func);
                     } else {
                         if (func.equals("pi")) x = 3.14159265359;

@@ -44,15 +44,16 @@ public class canvas extends JPanel {
                 public void actionPerformed(ActionEvent e){                  
                     // zoom = Integer.valueOf(infeild.getText());
                     String text = infeild.getText();
-                    element newElement = eng.getType(text);
-                    System.out.println(newElement);
+                    // System.out.println(newElement);
                     if (!text.equals("clear")) {
+                        element newElement = eng.getType(text);
                         elements = addelement(elements, newElement);
                         list.add(newElement);
                         // System.out.println("b");
                     } else {
                         elements = new element[] {new graph("verylongbadname","0",Color.black)};
                         eng.clearall();
+                        list.clearall();
                     }
                 }
             }
@@ -102,6 +103,17 @@ public class canvas extends JPanel {
             }
         }
         throw new RuntimeException("No variable called: " + name);
+    }
+    public static double getvalue(String name,Double x) {
+        for (int i = 0; i < elements.length; i++) {
+            if (elements[i] instanceof graph) {
+                graph var = (graph) elements[i];
+                if (var.name.equals(name)) {
+                    return var.f(x);
+                } 
+            }
+        }
+        throw new RuntimeException("No function called: " + name);
     }
 
 
@@ -275,7 +287,7 @@ public class canvas extends JPanel {
             mousedownx = mousex;
             scry += (mousedowny-mousey)/zoom;
             mousedowny = mousey;
-            repaint();
+            // repaint();
         } else {
             mousedownx = -1;
             mousedowny = -1;

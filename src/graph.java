@@ -7,6 +7,7 @@ public class graph extends element{
         this.function = function;
         this.color = color;
         this.name = name;
+        f(1);
     }
     @Override
     public void draw(int start,int end, float zoom,int scrx,int scry,Graphics g){

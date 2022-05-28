@@ -22,9 +22,14 @@ public class list extends JComponent {
         JScrollPane pans = new JScrollPane(pan);
         add(pans);
     }
+    public static void clearall() {
+        pan.removeAll();
+        pan.add(new input());
+        pan.setLayout(new GridLayout(20,1));
+    }
     public static void add(element element) {
         pan.add(new listelement(element.getName(), element.getFun(), element.color));
-        pan.repaint();
+        // pan.repaint();
     }
     @Override
     public Dimension getMinimumSize() {

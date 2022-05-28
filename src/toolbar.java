@@ -14,7 +14,10 @@ public class toolbar extends JComponent{
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        g.fillOval(getX(), getY(), getWidth(), getHeight());
+        g.setColor(Color.red);
+        g.drawLine(0, 0, getWidth(), getHeight());
+        g.drawLine(0, getHeight(), getWidth(), 0);
+        // g.fillOval(getX(), getY(), getWidth(), getHeight());
     }
 }
 class tool extends JButton{
