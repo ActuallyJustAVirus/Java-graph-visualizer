@@ -22,6 +22,13 @@ public class eng {
             String[] elements = input.split("=");
             name = elements[0];
             input = elements[1];
+            if (input.contains(",")) {
+                return createPoint(name,input);
+            }
+            if (name.contains("(")) {
+                name = name.substring(0, name.length()-3);
+                return createfunction(name,input);
+            }
             return createvariable(name, input);
         } else {
             for (char i = 'a'; i < 'z'; i++) {

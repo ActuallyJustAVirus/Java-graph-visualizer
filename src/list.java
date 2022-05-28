@@ -23,7 +23,8 @@ public class list extends JComponent {
         add(pans);
     }
     public static void add(element element) {
-        pan.add(new listelement(element.name, element.getFun(), element.color));
+        pan.add(new listelement(element.getName(), element.getFun(), element.color));
+        pan.repaint();
     }
     @Override
     public Dimension getMinimumSize() {
