@@ -23,17 +23,20 @@ public class eng {
             name = elements[0];
             input = elements[1];
             if (input.contains(",")) {
+                if (exists(name)) throw new RuntimeException("Point '"+name+"' already exist");
                 return createPoint(name,input);
             }
             if (name.contains("(")) {
                 name = name.substring(0, name.length()-3);
+                if (exists(name)) throw new RuntimeException("Function '"+name+"' already exist");
                 return createfunction(name,input);
             }
+            if (exists(name)) throw new RuntimeException("Variable '"+name+"' already exist");
             return createvariable(name, input);
         } else {
             for (char i = 'a'; i < 'z'; i++) {
                 String letter = new String(new char[] {i});
-                if ((!variabels.contains(letter)) && (!points.contains(letter)) && (!functions.contains(letter))) {
+                if (exists(letter)) {
                     name = letter;
                     break;
                 }
@@ -168,15 +171,21 @@ public class eng {
         points = new ArrayList<String>();
     }
 
-    public static <T> boolean contains(final T[] array, final T v) {
-        if (array instanceof graph[]) {
-            
-        }
-        for (final T e : array){
-            if (e == v || v != null && v.equals(e)){
-                return true;
-            }
-        }
+    private final static boolean exists(String name) {
+        if (points.contains(name)) return true;
+        if (variabels.contains(name)) return true;
+        if (functions.contains(name)) return true;
         return false;
     }
+
+    // public static <T> boolean contains(final T[] array, final T v) {
+    //     if (array instanceof graph[]) {
+    //     }
+    //     for (final T e : array){
+    //         if (e == v || v != null && v.equals(e)){
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 }
