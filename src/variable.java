@@ -1,3 +1,5 @@
+import java.awt.Graphics;
+
 public class variable extends element{
     final static boolean drawable = false;
     String value;
@@ -15,5 +17,8 @@ public class variable extends element{
     @Override
     public String getFun() {
         return value;
+    }
+    @Override
+    public void draw(int start, int end, float zoom, int scrx, int scry, Graphics g) {
     }
 }

@@ -36,15 +36,15 @@ public class eng {
         } else {
             for (char i = 'a'; i < 'z'; i++) {
                 String letter = new String(new char[] {i});
-                if (exists(letter)) {
+                if (!exists(letter)) {
                     name = letter;
                     break;
                 }
             }
         }
-        if (input.contains(",")) {
-            return createPoint(name,input);
-        }
+        // if (input.contains(",")) {
+        //     return createPoint(name,input);
+        // }
         return createfunction(name,input);
     }
     
@@ -91,7 +91,14 @@ public class eng {
                 if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
                 return x;
             }
-            
+
+            boolean isletter(int ch){
+                if ((ch >= 'a' && ch <= 'z')||(ch >= 'A' && ch <= 'Z')) {
+                    return true;
+                }
+                return false;
+            }
+
             // Grammar:
             // expression = term | expression `+` term | expression `-` term
             // term = factor | term `*` factor | term `/` factor
@@ -118,6 +125,22 @@ public class eng {
                 }
             }
             
+            point getPoint() {
+                double x;
+                double y;
+                int startPos = this.pos;
+                if (isletter(ch)) { // functions
+                    while (isletter(ch)) nextChar();
+                    String var = str.substring(startPos, this.pos);
+                    if (points.contains(var)) return canvas.getpoint(var);
+                    else throw new RuntimeException("Unknown point: " + var);
+                }
+                if (eat('(')) x = parseExpression(); else throw new RuntimeException("Missing '(' for point");
+                if (eat(',')) y = parseExpression(); else throw new RuntimeException("Missing ',' for point");
+                if (!eat(')')) throw new RuntimeException("Missing ')' for point");
+                return new point(x, y);
+            }
+
             double parseFactor() {
                 if (eat('+')) return +parseFactor(); // unary plus
                 if (eat('-')) return -parseFactor(); // unary minus
@@ -130,24 +153,43 @@ public class eng {
                 } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
                     while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
                     x = Double.parseDouble(str.substring(startPos, this.pos));
-                } else if (ch >= 'a' && ch <= 'z') { // functions
-                    while (ch >= 'a' && ch <= 'z') nextChar();
+                } else if (isletter(ch)) { // functions
+                    while (isletter(ch)) nextChar();
                     String func = str.substring(startPos, this.pos);
                     if (eat('(')) {
-                        x = parseExpression();
-                        if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
-                        if (func.equals("sqrt")) x = Math.sqrt(x);
-                        else if (func.equals("sin")) x = Math.sin(x);
-                        else if (func.equals("cos")) x = Math.cos(x);
-                        else if (func.equals("tan")) x = Math.tan(x);
-                        else if (func.equals("sign")) x = Math.signum(x);
-                        else if (func.equals("abs")) x = Math.abs(x);
-                        else if (func.equals("log")) x = Math.log10(x);
-                        else if (func.equals("round")) x = Math.round(x);
-                        else if (func.equals("floor")) x = Math.floor(x);
-                        else if (func.equals("ceil")) x = Math.ceil(x);
-                        else if (functions.contains(func)) x = canvas.getvalue(func,x);
-                        else throw new RuntimeException("Unknown function: " + func);
+                        switch (func) {
+                            case "getx":
+                            case "gety":
+                                point p = getPoint();
+                                if (!eat(')')) throw new RuntimeException("Missing ')' after point argument to " + func);
+                                switch (func) {
+                                    case "getx":
+                                        x = p.getX(); 
+                                        break;
+                                    case "gety":
+                                        x = p.getY(); 
+                                        break;
+                                    default:
+                                        throw new RuntimeException("No point function called :" + func);
+                                }
+                                break;
+                            default:
+                                x = parseExpression();
+                                if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
+                                if (func.equals("sqrt")) x = Math.sqrt(x);
+                                else if (func.equals("sin")) x = Math.sin(x);
+                                else if (func.equals("cos")) x = Math.cos(x);
+                                else if (func.equals("tan")) x = Math.tan(x);
+                                else if (func.equals("sign")) x = Math.signum(x);
+                                else if (func.equals("abs")) x = Math.abs(x);
+                                else if (func.equals("log")) x = Math.log10(x);
+                                else if (func.equals("round")) x = Math.round(x);
+                                else if (func.equals("floor")) x = Math.floor(x);
+                                else if (func.equals("ceil")) x = Math.ceil(x);
+                                else if (functions.contains(func)) x = canvas.getvalue(func,x);
+                                else throw new RuntimeException("Unknown function: " + func);
+                                break;
+                        }
                     } else {
                         if (func.equals("pi")) x = 3.14159265359;
                         else if (func.equals("e")) x = 2.71828182846;
@@ -155,7 +197,7 @@ public class eng {
                         else throw new RuntimeException("Unknown variable: " + func);
                     }
                 } else {
-                    throw new RuntimeException("Unexpected: " + (char)ch);
+                    throw new RuntimeException("Unexpected2: " + (char)ch);
                 }
                 
                 if (eat('^')) x = Math.pow(x, parseFactor()); // exponentiation
@@ -188,4 +230,18 @@ public class eng {
     //     }
     //     return false;
     // }
+}
+final class point {
+    private double x;
+    private double y;
+    public point(double x, double y) {
+        this.x = x;
+        this.y = y;
+    }
+    public double getX() {
+        return x;
+    }
+    public double getY() {
+        return y;
+    }
 }

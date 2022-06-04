@@ -24,4 +24,7 @@ public class punktermedbernard extends element {
     public String getFun() {
         return "("+x+","+y+")";
     }
+    public point getvalue() {
+        return new point(eng.eval(x), eng.eval(y));
+    }
 }

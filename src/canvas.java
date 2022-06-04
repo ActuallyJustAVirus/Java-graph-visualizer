@@ -115,6 +115,21 @@ public class canvas extends JPanel {
         }
         throw new RuntimeException("No function called: " + name);
     }
+    public static point getpoint(String name) {
+        for (int i = 0; i < elements.length; i++) {
+            if (elements[i] instanceof punktermedbernard) {
+                punktermedbernard var = (punktermedbernard) elements[i];
+                if (var.name.equals(name)) {
+                    return var.getvalue();
+                } 
+            }
+        }
+        throw new RuntimeException("No point called: " + name);
+    }
+    public static double getvalue(String name,point x) {
+        return x.getX();
+        // throw new RuntimeException("No function called: " + name);
+    }
 
 
 
