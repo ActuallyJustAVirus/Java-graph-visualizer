@@ -6,6 +6,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class canvas extends JPanel {
+    static boolean showGrid = true;
+    static boolean showAxis = true;
     double scrx = 0;
     double scry = 0;
     float zoom = 50;
@@ -69,19 +71,23 @@ public class canvas extends JPanel {
         setBackground(Color.white);
 
         double gridsize = Math.pow(10,Math.round(Math.log10((50/zoom))));
-        g.setColor(Color.lightGray);
-        for (int i = -1; i < Math.ceil(getWidth()/(zoom*gridsize)); i++) {
-            int x = (int) (zoom*gridsize*(i+1)-(paintx%(zoom*gridsize)));
-            g.drawLine(x, 0,x, getHeight());
-        }
-        for (int i = -1; i < Math.ceil(getHeight()/(zoom*gridsize)); i++) {
-            int y = (int) (zoom*gridsize*(i)-(painty%(zoom*gridsize)));
-            g.drawLine(0, y,getWidth(),y);
+        if (showGrid) {
+            g.setColor(Color.lightGray);
+            for (int i = -1; i < Math.ceil(getWidth()/(zoom*gridsize)); i++) {
+                int x = (int) (zoom*gridsize*(i+1)-(paintx%(zoom*gridsize)));
+                g.drawLine(x, 0,x, getHeight());
+            }
+            for (int i = -1; i < Math.ceil(getHeight()/(zoom*gridsize)); i++) {
+                int y = (int) (zoom*gridsize*(i)-(painty%(zoom*gridsize)));
+                g.drawLine(0, y,getWidth(),y);
+            }
         }
 
-        g.setColor(Color.black);
-        g.drawLine(-paintx,0,-paintx,getHeight());//x
-        g.drawLine(0,-painty,getWidth(),-painty);//y
+        if (showAxis) {
+            g.setColor(Color.black);
+            g.drawLine(-paintx,0,-paintx,getHeight());//x
+            g.drawLine(0,-painty,getWidth(),-painty);//y
+        }
 
         for (element element : elements) {
             element.draw(paintx, paintx+getWidth(), zoom, paintx, painty, g);

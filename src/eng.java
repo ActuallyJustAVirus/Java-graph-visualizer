@@ -4,14 +4,14 @@
 import java.awt.*;
 import java.util.ArrayList;
 // import java.util.Arrays;
+/*
+function
+point
+variable
+eqution
+*/
 
 public class eng {
-    String[] types = {
-        "function",
-        "point",
-        "variable",
-        "eqution"
-    };
     private static ArrayList<String> variabels = new ArrayList<String>();
     private static ArrayList<String> points = new ArrayList<String>();
     private static ArrayList<String> functions = new ArrayList<String>();

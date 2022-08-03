@@ -1,5 +1,5 @@
 import java.awt.*;
-import javax.swing.JComponent;
+import javax.swing.*;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -67,6 +67,8 @@ class listelement extends JComponent{
         this.color = color;
         this.name = name;
         this.fun = fun;
+        // addMouseListener(this);
+
         // add(new JLabel(text));
     }
     @Override
@@ -91,5 +93,19 @@ class listelement extends JComponent{
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(200,50);
+    }
+    /**
+     * Circle
+     */
+    public class Circle extends JComponent{
+        public Circle() {
+            
+        }
+        @Override
+        public void paint(Graphics g) {
+            // TODO Auto-generated method stub
+            super.paint(g);
+        }
+        
     }
 }

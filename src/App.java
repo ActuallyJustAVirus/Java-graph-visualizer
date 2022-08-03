@@ -1,5 +1,7 @@
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+
 // import javax.swing.JTextField;
 // import java.awt.event.*;
 import java.awt.*;
@@ -10,6 +12,7 @@ public class App {
     JFrame frame = new JFrame("GeoMaster :D");
     toolbar toolbar = new toolbar();
     list list = new list();
+    menubar menubar = new menubar();
     // JTextField infeild = new JTextField("50");  
     ImageIcon img = new ImageIcon("rsc/icon.png");
     public static void main(String[] args) throws Exception {
@@ -29,7 +32,8 @@ public class App {
         frame.add(canvas, BorderLayout.CENTER);
         frame.add(toolbar, BorderLayout.NORTH);
         frame.add(list, BorderLayout.WEST);
-        frame.setSize(614, 637);
+        frame.setJMenuBar(menubar);
+        frame.setSize(800,700);
 		frame.setVisible(true);
         // frame.setLayout(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
