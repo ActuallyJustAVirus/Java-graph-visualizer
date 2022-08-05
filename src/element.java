@@ -7,5 +7,5 @@ public abstract class element {
     
     public abstract void draw(int start,int end, float zoom,int scrx,int scry,Graphics g);
     public abstract String getName();
-    public abstract String getFun();
+    public abstract String getExp();
 }

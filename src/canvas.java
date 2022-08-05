@@ -23,13 +23,8 @@ public class canvas extends JPanel {
     // double doty = 0;    
     int mousedownx = -1;
     int mousedowny = -1;
-    static element[] elements = {
-        eng.createfunction("f", "cos(x)*x-x*x"),
-        eng.createfunction("fm", "cos(x)-x*sin(x)-2*x"),
-        eng.createPoint("A", "(1,1)"),
-        eng.createvariable("test", "-2.3")
-    };
-    JTextField infeild = new JTextField("????????????????????????????????????????");  
+
+    
     
     public canvas() {
         MouseWheelListener mousewheellister = new Mymousewheellistener();
@@ -40,27 +35,6 @@ public class canvas extends JPanel {
         addKeyListener(listener);
         setFocusable(true);
         // System.out.println(f(-2));
-        infeild.setBounds(10,10, 150,20);
-        infeild.addActionListener(
-            new ActionListener(){
-                public void actionPerformed(ActionEvent e){                  
-                    // zoom = Integer.valueOf(infeild.getText());
-                    String text = infeild.getText();
-                    // System.out.println(newElement);
-                    if (!text.equals("clear")) {
-                        element newElement = eng.getType(text);
-                        elements = addelement(elements, newElement);
-                        list.add(newElement);
-                        // System.out.println("b");
-                    } else {
-                        elements = new element[] {new graph("verylongbadname","0",Color.black)};
-                        eng.clearall();
-                        list.clearall();
-                    }
-                }
-            }
-        );
-        add(infeild);
         // double val = graphs[0].f(1);
         // System.out.println(val);
     }
@@ -89,7 +63,7 @@ public class canvas extends JPanel {
             g.drawLine(0,-painty,getWidth(),-painty);//y
         }
 
-        for (element element : elements) {
+        for (element element : list.elements) {
             element.draw(paintx, paintx+getWidth(), zoom, paintx, painty, g);
         }
 
@@ -97,64 +71,23 @@ public class canvas extends JPanel {
         g.drawString("zoom: "+String.valueOf(zoom), 10, 25);
         g.drawString("gridsize: "+String.valueOf(gridsize), 10, 40);
         g.drawString("scrx: "+String.valueOf(scrx)+" scry: "+String.valueOf(scry), 10, 55);
-        infeild.repaint();
+        // infeild.repaint();
     }
-    public static double getvalue(String name) {
-        for (int i = 0; i < elements.length; i++) {
-            if (elements[i] instanceof variable) {
-                variable var = (variable) elements[i];
-                if (var.name.equals(name)) {
-                    return var.getvalue();
-                } 
-            }
-        }
-        throw new RuntimeException("No variable called: " + name);
-    }
-    public static double getvalue(String name,Double x) {
-        for (int i = 0; i < elements.length; i++) {
-            if (elements[i] instanceof graph) {
-                graph var = (graph) elements[i];
-                if (var.name.equals(name)) {
-                    return var.f(x);
-                } 
-            }
-        }
-        throw new RuntimeException("No function called: " + name);
-    }
-    public static point getpoint(String name) {
-        for (int i = 0; i < elements.length; i++) {
-            if (elements[i] instanceof punktermedbernard) {
-                punktermedbernard var = (punktermedbernard) elements[i];
-                if (var.name.equals(name)) {
-                    return var.getvalue();
-                } 
-            }
-        }
-        throw new RuntimeException("No point called: " + name);
-    }
-    public static double getvalue(String name,point x) {
-        return x.getX();
-        // throw new RuntimeException("No function called: " + name);
-    }
+    
 
 
 
-    public double f(double x) {
-        return (Math.cos(x)*x-x*x);
-    }
-    public double fm(double x) {
-        return (Math.cos(x)-x*Math.sin(x)-2*x);
-    }
-    public double newton(double x) {
-        return (x-f(x)/fm(x));
-    }
+    // public double f(double x) {
+    //     return (Math.cos(x)*x-x*x);
+    // }
+    // public double fm(double x) {
+    //     return (Math.cos(x)-x*Math.sin(x)-2*x);
+    // }
+    // public double newton(double x) {
+    //     return (x-f(x)/fm(x));
+    // }
 
-    public element[] addelement(element[] old,element toadd){
-        ArrayList<element> gamer = new ArrayList<element>(Arrays.asList(old));
-        gamer.add(toadd);
-        old = gamer.toArray(old);
-        return old;
-    }
+    
 
     public class Mymousewheellistener implements MouseWheelListener {
 

@@ -2,9 +2,9 @@ import java.awt.*;
 
 public class graph extends element{
     final static boolean drawable = true;
-    String function;
+    String expression;
     public graph(String name, String function, Color color){
-        this.function = function;
+        this.expression = function;
         this.color = color;
         this.name = name;
         f(1);
@@ -30,16 +30,16 @@ public class graph extends element{
     public double f(double x){
         String strx = "("+String.format("%.10f", x)+")";
         strx = strx.replace(",","."); //ch >= 'a' && ch <= 'z'
-        String fun = getreplace(function, strx);
-        return eng.eval(fun);
+        String fun = getreplace(expression, strx);
+        return (double)eng.eval(fun);
     }
     @Override
     public String getName() {
         return name+"(x)";
     }
     @Override
-    public String getFun() {
-        return function;
+    public String getExp() {
+        return expression;
     }
     private boolean isletter(char ch){
         if ((ch >= 'a' && ch <= 'z')||(ch >= 'A' && ch <= 'Z')) {

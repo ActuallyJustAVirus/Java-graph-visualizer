@@ -22,11 +22,11 @@ public class eng {
             String[] elements = input.split("=");
             name = elements[0];
             input = elements[1];
-            if (input.contains(",")) {
+            if (eng.eval(input) instanceof point) {
                 if (exists(name)) throw new RuntimeException("Point '"+name+"' already exist");
                 return createPoint(name,input);
             }
-            if (name.contains("(")) {
+            if (name.contains("(x)")) {
                 name = name.substring(0, name.length()-3);
                 if (exists(name)) throw new RuntimeException("Function '"+name+"' already exist");
                 return createfunction(name,input);
@@ -68,7 +68,7 @@ public class eng {
         return new variable(name,input);
     }
 
-    public static double eval(final String str) { // original code by boann
+    public static Object eval(final String str) { // original code by boann
         return new Object() {
             int pos = -1, ch;
             
@@ -85,9 +85,9 @@ public class eng {
                 return false;
             }
             
-            double parse() {
+            Object parse() {
                 nextChar();
-                double x = parseExpression();
+                Object x = parseExpression();
                 if (pos < str.length()) throw new RuntimeException("Unexpected: " + (char)ch);
                 return x;
             }
@@ -106,49 +106,58 @@ public class eng {
             //        | functionName `(` expression `)` | functionName factor
             //        | factor `^` factor
             
-            double parseExpression() {
-                double x = parseTerm();
+            Object parseExpression() {
+                Object x = parseTerm();
+                if (x instanceof point) return x;
+                double dx = (double)x;
                 for (;;) {
-                    if      (eat('+')) x += parseTerm(); // addition
-                    else if (eat('-')) x -= parseTerm(); // subtraction
-                    else return x;
+                    if      (eat('+')) dx += (double)parseTerm(); // addition
+                    else if (eat('-')) dx -= (double)parseTerm(); // subtraction
+                    else return dx;
                 }
             }
             
-            double parseTerm() {
-                double x = parseFactor();
+            Object parseTerm() {
+                Object x = parseFactor();
+                if (x instanceof point) return x;
+                double dx = (double)x;
                 for (;;) {
-                    if      (eat('*')) x *= parseFactor(); // multiplication
-                    else if (eat('/')) x /= parseFactor(); // division
-                    else if (eat('%')) x %= parseFactor(); // mod
-                    else return x;
+                    if      (eat('*')) dx *= (double)parseFactor(); // multiplication
+                    else if (eat('/')) dx /= (double)parseFactor(); // division
+                    else if (eat('%')) dx %= (double)parseFactor(); // mod
+                    else return dx;
                 }
             }
             
-            point getPoint() {
-                double x;
-                double y;
-                int startPos = this.pos;
-                if (isletter(ch)) { // functions
-                    while (isletter(ch)) nextChar();
-                    String var = str.substring(startPos, this.pos);
-                    if (points.contains(var)) return canvas.getpoint(var);
-                    else throw new RuntimeException("Unknown point: " + var);
-                }
-                if (eat('(')) x = parseExpression(); else throw new RuntimeException("Missing '(' for point");
-                if (eat(',')) y = parseExpression(); else throw new RuntimeException("Missing ',' for point");
-                if (!eat(')')) throw new RuntimeException("Missing ')' for point");
-                return new point(x, y);
-            }
+            // point getPoint() {
+            //     double x;
+            //     double y;
+            //     int startPos = this.pos;
+            //     if (isletter(ch)) { // functions
+            //         while (isletter(ch)) nextChar();
+            //         String var = str.substring(startPos, this.pos);
+            //         if (points.contains(var)) return list.getpoint(var);
+            //         else throw new RuntimeException("Unknown point: " + var);
+            //     }
+            //     if (eat('(')) x = (double)parseExpression(); else throw new RuntimeException("Missing '(' for point");
+            //     if (eat(',')) y = (double)parseExpression(); else throw new RuntimeException("Missing ',' for point");
+            //     if (!eat(')')) throw new RuntimeException("Missing ')' for point");
+            //     return new point(x, y);
+            // }
 
-            double parseFactor() {
-                if (eat('+')) return +parseFactor(); // unary plus
-                if (eat('-')) return -parseFactor(); // unary minus
+            Object parseFactor() {
+                if (eat('+')) return +(double)parseFactor(); // unary plus
+                if (eat('-')) return -(double)parseFactor(); // unary minus
                 
                 double x;
                 int startPos = this.pos;
                 if (eat('(')) { // parentheses
-                    x = parseExpression();
+                    x = (double)parseExpression();
+                    if (eat(',')) {
+                        double y = (double)parseExpression();
+                        if (!eat(')')) throw new RuntimeException("Missing ')'");
+                        return new point(x, y);
+                    }
                     if (!eat(')')) throw new RuntimeException("Missing ')'");
                 } else if ((ch >= '0' && ch <= '9') || ch == '.') { // numbers
                     while ((ch >= '0' && ch <= '9') || ch == '.') nextChar();
@@ -160,21 +169,38 @@ public class eng {
                         switch (func) {
                             case "getx":
                             case "gety":
-                                point p = getPoint();
+                                point p = (point)parseExpression();
                                 if (!eat(')')) throw new RuntimeException("Missing ')' after point argument to " + func);
                                 switch (func) {
-                                    case "getx":
-                                        x = p.getX(); 
-                                        break;
-                                    case "gety":
-                                        x = p.getY(); 
-                                        break;
-                                    default:
-                                        throw new RuntimeException("No point function called :" + func);
+                                    case "getx": x = p.getX(); break;
+                                    case "gety": x = p.getY(); break;
+                                    default: throw new RuntimeException("Missing point function:" + func);
                                 }
                                 break;
+                            case "max":
+                            case "min":
+                                x = (double)parseExpression();
+                                double y;
+                                if (eat(',')) y = (double)parseExpression(); else throw new RuntimeException("Missing ',' in argument to " + func);
+                                if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
+                                switch (func) {
+                                    case "max": x = Math.max(x,y); break;
+                                    case "min": x = Math.min(x,y); break;
+                                    default: throw new RuntimeException("No -1");
+                                }
+                                break;
+                            // case "sqrt":
+                            // case "sin":
+                            // case "cos":
+                            // case "tan":
+                            // case "sign":
+                            // case "abs":
+                            // case "log":
+                            // case "round":
+                            // case "floor":
+                            // case "ceil":
                             default:
-                                x = parseExpression();
+                                x = (double)parseExpression();
                                 if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
                                 if (func.equals("sqrt")) x = Math.sqrt(x);
                                 else if (func.equals("sin")) x = Math.sin(x);
@@ -186,21 +212,22 @@ public class eng {
                                 else if (func.equals("round")) x = Math.round(x);
                                 else if (func.equals("floor")) x = Math.floor(x);
                                 else if (func.equals("ceil")) x = Math.ceil(x);
-                                else if (functions.contains(func)) x = canvas.getvalue(func,x);
+                                else if (functions.contains(func)) x = list.getvalue(func,x);
                                 else throw new RuntimeException("Unknown function: " + func);
                                 break;
                         }
                     } else {
                         if (func.equals("pi")) x = 3.14159265359;
                         else if (func.equals("e")) x = 2.71828182846;
-                        else if (variabels.contains(func)) x = canvas.getvalue(func);
+                        else if (variabels.contains(func)) x = list.getvalue(func);
+                        else if (points.contains(func)) return list.getpoint(func);
                         else throw new RuntimeException("Unknown variable: " + func);
                     }
                 } else {
                     throw new RuntimeException("Unexpected2: " + (char)ch);
                 }
                 
-                if (eat('^')) x = Math.pow(x, parseFactor()); // exponentiation
+                if (eat('^')) x = Math.pow(x, (double)parseFactor()); // exponentiation
                 
                 return x;
             }
