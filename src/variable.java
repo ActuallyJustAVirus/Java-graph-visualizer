@@ -8,7 +8,7 @@ public class variable extends element{
         this.value = value;
     }
     public double getvalue() {
-        return (double)eng.eval(value);
+        return (double)eng.eval(value,0);
     }
     @Override
     public String getName() {

@@ -19,8 +19,7 @@ public class canvas extends JPanel {
     boolean RIGHT = false;
     boolean PAGE_DOWN = false;
     boolean PAGE_UP = false;
-    // double dotx = 4;
-    // double doty = 0;    
+    double scroll = 0;
     int mousedownx = -1;
     int mousedowny = -1;
 
@@ -71,6 +70,7 @@ public class canvas extends JPanel {
         g.drawString("zoom: "+String.valueOf(zoom), 10, 25);
         g.drawString("gridsize: "+String.valueOf(gridsize), 10, 40);
         g.drawString("scrx: "+String.valueOf(scrx)+" scry: "+String.valueOf(scry), 10, 55);
+        g.drawString("scroll: "+scroll, 10, 70);
         // infeild.repaint();
     }
     
@@ -93,17 +93,15 @@ public class canvas extends JPanel {
 
         @Override
         public void mouseWheelMoved(MouseWheelEvent e) {
-            if (e.isControlDown()){
-                if (e.getWheelRotation() < 0){
-                    System.out.println("mouse wheel Up");
-                }
-                else{
-                    System.out.println("mouse wheel Down");
-                }
+            double rot = e.getPreciseWheelRotation();
+            if (rot < 0){
+                System.out.println("mouse wheel Up"+rot);
+            } else{
+                System.out.println("mouse wheel Down"+rot);
             }
-            else{
-                getParent().dispatchEvent(e);
-            }
+            scroll += rot;
+            // if (!e.isControlDown()){
+            // }
             
         }
     }
@@ -192,6 +190,10 @@ public class canvas extends JPanel {
                 case KeyEvent.VK_PLUS:
                     list.name();
                     break;
+                case KeyEvent.VK_HOME:
+                    scrx = 0;
+                    scry = 0;
+                    break;
                 default:
                     break;
             }
@@ -257,6 +259,12 @@ public class canvas extends JPanel {
         if (PAGE_UP) {
             zoom *= 1.1;
             if (zoom>1.0E10) zoom = 1.0E10f;
+        }
+        if (scroll != 0) {
+            zoom *= Math.pow(1.1, -scroll);
+            if (zoom>1.0E10) zoom = 1.0E10f;
+            if (zoom<0.001) zoom = 0.001f;
+            scroll = 0;
         }
         // if (M3) {
         //     PointerInfo mouse = MouseInfo.getPointerInfo();

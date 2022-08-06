@@ -31,7 +31,7 @@ public class graph extends element{
         String strx = "("+String.format("%.10f", x)+")";
         strx = strx.replace(",","."); //ch >= 'a' && ch <= 'z'
         String fun = getreplace(expression, strx);
-        return (double)eng.eval(fun);
+        return (double)eng.eval(expression,x);
     }
     @Override
     public String getName() {

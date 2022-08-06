@@ -17,35 +17,52 @@ public class eng {
     private static ArrayList<String> functions = new ArrayList<String>();
 
     public static element getType(String input) {
-        String name = "nulll";
         if (input.contains("=")) {
             String[] elements = input.split("=");
-            name = elements[0];
+            String name = elements[0];
             input = elements[1];
-            if (eng.eval(input) instanceof point) {
-                if (exists(name)) throw new RuntimeException("Point '"+name+"' already exist");
-                return createPoint(name,input);
-            }
             if (name.contains("(x)")) {
                 name = name.substring(0, name.length()-3);
                 if (exists(name)) throw new RuntimeException("Function '"+name+"' already exist");
                 return createfunction(name,input);
             }
-            if (exists(name)) throw new RuntimeException("Variable '"+name+"' already exist");
-            return createvariable(name, input);
+            Object type = eng.eval(input,0);
+            if (type instanceof point) {
+                if (exists(name)) throw new RuntimeException("Point '"+name+"' already exist");
+                return createPoint(name,input);
+            }
+            if (type instanceof Double) {
+                if (exists(name)) throw new RuntimeException("Variable '"+name+"' already exist");
+                return createvariable(name, input);
+            }
+            throw new RuntimeException("unknown type");
         } else {
-            for (char i = 'a'; i < 'z'; i++) {
-                String letter = new String(new char[] {i});
-                if (!exists(letter)) {
-                    name = letter;
-                    break;
+            String name = "";
+            ArrayList<Character> nameL = new ArrayList<Character>();
+            for (int j = 0;;) {
+                for (char i = 'a'; i <= 'z'; i++) {
+                    if (nameL.size()-1 == j) nameL.set(j, i); else nameL.add(j, i);
+                    name = "";
+                    for (int k = 0; k <= nameL.size()-1; k++) {
+                        name += nameL.get(k);
+                    }
+                    if (!exists(name)) break;
+                }
+                if (!exists(name)) break;
+                nameL.set(nameL.size()-1, 'a');
+                for (int i = nameL.size()-2; ; i--) {
+                    if (i < 0) {
+                        j++;
+                        break;
+                    }
+                    char c = nameL.get(i);
+                    if (c < 'z'&&c >= 'a') {c++; nameL.set(i, c); break;} else nameL.set(i, 'a');
                 }
             }
+            if (input.contains("x")&&!input.contains("getx")) return createfunction(name,input);
+            if (eng.eval(input, 0) instanceof point) return createPoint(name, input);
+            return createvariable(name,input);
         }
-        // if (input.contains(",")) {
-        //     return createPoint(name,input);
-        // }
-        return createfunction(name,input);
     }
     
     public final static punktermedbernard createPoint(String name, String input) {
@@ -68,7 +85,7 @@ public class eng {
         return new variable(name,input);
     }
 
-    public static Object eval(final String str) { // original code by boann
+    public static Object eval(final String str, final double xx) { // original code by boann
         return new Object() {
             int pos = -1, ch;
             
@@ -179,6 +196,7 @@ public class eng {
                                 break;
                             case "max":
                             case "min":
+                            case "segment":
                                 x = (double)parseExpression();
                                 double y;
                                 if (eat(',')) y = (double)parseExpression(); else throw new RuntimeException("Missing ',' in argument to " + func);
@@ -186,6 +204,7 @@ public class eng {
                                 switch (func) {
                                     case "max": x = Math.max(x,y); break;
                                     case "min": x = Math.min(x,y); break;
+                                    case "segment": x = Math.min(x,y); break;
                                     default: throw new RuntimeException("No -1");
                                 }
                                 break;
@@ -219,6 +238,7 @@ public class eng {
                     } else {
                         if (func.equals("pi")) x = 3.14159265359;
                         else if (func.equals("e")) x = 2.71828182846;
+                        else if (func.equals("x")) x = xx;
                         else if (variabels.contains(func)) x = list.getvalue(func);
                         else if (points.contains(func)) return list.getpoint(func);
                         else throw new RuntimeException("Unknown variable: " + func);
@@ -270,5 +290,8 @@ final class point {
     }
     public double getY() {
         return y;
+    }
+    public String draw() {
+        return "("+x+","+y+")";
     }
 }

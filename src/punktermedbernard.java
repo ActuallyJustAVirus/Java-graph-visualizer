@@ -14,7 +14,7 @@ public class punktermedbernard extends element {
     @Override
     public void draw(int start,int end, float zoom,int scrx,int scry,Graphics g){
         g.setColor(color);
-        g.fillOval((int) (((double)eng.eval(x))*zoom-scrx-size/2),(int) (-((double)eng.eval(y))*zoom-scry-size/2), size, size);
+        g.fillOval((int) (((double)eng.eval(x,0))*zoom-scrx-size/2),(int) (-((double)eng.eval(y,0))*zoom-scry-size/2), size, size);
     }
     @Override
     public String getName() {
@@ -25,6 +25,6 @@ public class punktermedbernard extends element {
         return "("+x+","+y+")";
     }
     public point getvalue() {
-        return new point((double)eng.eval(x), (double)eng.eval(y));
+        return new point((double)eng.eval(x,0), (double)eng.eval(y, 0));
     }
 }

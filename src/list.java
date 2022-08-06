@@ -27,7 +27,7 @@ public class list extends JComponent {
     public list() {
         pan.add(new input());
         for (element element : elements) {
-            pan.add(new listelement(element.getName(), element.getExp(), element.color));
+            pan.add(new listelement(element));
         }
         // pan.add(new JLabel("text"));pan.add(new JLabel("text"));pan.add(new JLabel("text"));
         pan.setLayout(new GridLayout(20,1));   
@@ -41,7 +41,10 @@ public class list extends JComponent {
         pan.setLayout(new GridLayout(20,1));
     }
     public static void add(element element) {
-        pan.add(new listelement(element.getName(), element.getExp(), element.color));
+        pan.add(new listelement(element));
+        int gridrow = 20;
+        if (pan.getComponentCount() > gridrow) gridrow = pan.getComponentCount();
+        pan.setLayout(new GridLayout(gridrow,1));
     }
 
     public static double getvalue(String name) {
@@ -137,29 +140,28 @@ class input extends JComponent {
 }
 
 class listelement extends JComponent{
-    Color color;
-    String name;
-    String fun;
+    element element;
 
-    public listelement(String name,String fun, Color color) {
-        this.color = color;
-        this.name = name;
-        this.fun = fun;
+    public listelement(element element) {
+        this.element = element;
     }
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         g.setColor(Color.LIGHT_GRAY);
         g.drawRect(1,1,getWidth()-2,getHeight()-2);
-        if (color == null) {
+        if (element.color == null) {
             g.setColor(Color.black);
             g.drawOval(15, 15, 20, 20);
         } else {
-            g.setColor(color);
+            g.setColor(element.color);
             g.fillOval(15, 15, 20, 20);
             g.setColor(Color.black);
         }
-        g.drawString(name+"="+fun, 45, 29);
+        g.drawString(element.getName()+"="+element.getExp(), 45, 29);
+        if (element instanceof variable) {
+            g.drawString(">"+eng.eval(element.getExp(), 0), 45, 44);
+        }
     }
     @Override
     public Dimension getMinimumSize() {
