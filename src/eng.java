@@ -60,7 +60,9 @@ public class eng {
                 }
             }
             if (input.contains("x")&&!input.contains("getx")) return createfunction(name,input);
-            if (eng.eval(input, 0) instanceof point) return createPoint(name, input);
+            Object type = eng.eval(input, 0);
+            if (type instanceof point) return createPoint(name, input);
+            if (type instanceof segment) return createSegment(name, input);
             return createvariable(name,input);
         }
     }
@@ -72,6 +74,10 @@ public class eng {
         vals[1] = vals[1].substring(0,vals[1].length()-1);
         points.add(name);
         return new punktermedbernard(name, vals[0], vals[1], color);
+    }
+    public final static Esegment createSegment(String name, String input) {
+        // points.add(name);
+        return new Esegment(name, input);
     }
 
     public final static graph createfunction(String name, String input) {
@@ -125,25 +131,29 @@ public class eng {
             
             Object parseExpression() {
                 Object x = parseTerm();
-                if (x instanceof point) return x;
-                double dx = (double)x;
-                for (;;) {
-                    if      (eat('+')) dx += (double)parseTerm(); // addition
-                    else if (eat('-')) dx -= (double)parseTerm(); // subtraction
-                    else return dx;
+                if (x instanceof Double) {
+                    double dx = (double)x;
+                    for (;;) {
+                        if      (eat('+')) dx += (double)parseTerm(); // addition
+                        else if (eat('-')) dx -= (double)parseTerm(); // subtraction
+                        else return dx;
+                    }
                 }
+                return x;
             }
             
             Object parseTerm() {
                 Object x = parseFactor();
-                if (x instanceof point) return x;
-                double dx = (double)x;
-                for (;;) {
-                    if      (eat('*')) dx *= (double)parseFactor(); // multiplication
-                    else if (eat('/')) dx /= (double)parseFactor(); // division
-                    else if (eat('%')) dx %= (double)parseFactor(); // mod
-                    else return dx;
+                if (x instanceof Double) {
+                    double dx = (double)x;
+                    for (;;) {
+                        if      (eat('*')) dx *= (double)parseFactor(); // multiplication
+                        else if (eat('/')) dx /= (double)parseFactor(); // division
+                        else if (eat('%')) dx %= (double)parseFactor(); // mod
+                        else return dx;
+                    }
                 }
+                return x;
             }
             
             // point getPoint() {
@@ -185,18 +195,17 @@ public class eng {
                     if (eat('(')) {
                         switch (func) {
                             case "getx":
-                            case "gety":
+                            case "gety":// (point)
                                 point p = (point)parseExpression();
                                 if (!eat(')')) throw new RuntimeException("Missing ')' after point argument to " + func);
                                 switch (func) {
                                     case "getx": x = p.getX(); break;
                                     case "gety": x = p.getY(); break;
-                                    default: throw new RuntimeException("Missing point function:" + func);
+                                    default: throw new RuntimeException("Missing point function: " + func);
                                 }
                                 break;
                             case "max":
-                            case "min":
-                            case "segment":
+                            case "min":// (double,double)
                                 x = (double)parseExpression();
                                 double y;
                                 if (eat(',')) y = (double)parseExpression(); else throw new RuntimeException("Missing ',' in argument to " + func);
@@ -204,10 +213,18 @@ public class eng {
                                 switch (func) {
                                     case "max": x = Math.max(x,y); break;
                                     case "min": x = Math.min(x,y); break;
-                                    case "segment": x = Math.min(x,y); break;
                                     default: throw new RuntimeException("No -1");
                                 }
                                 break;
+                            case "segment":// (point,point)
+                                point p1 = (point)parseExpression();
+                                point p2;
+                                if (eat(',')) p2 = (point)parseExpression(); else throw new RuntimeException("Missing ',' in argument to " + func);
+                                if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
+                                switch (func) {
+                                    case "segment": return new segment(p1,p2);
+                                    default: throw new RuntimeException("Missing function: " + func);
+                                }
                             // case "sqrt":
                             // case "sin":
                             // case "cos":
@@ -217,7 +234,7 @@ public class eng {
                             // case "log":
                             // case "round":
                             // case "floor":
-                            // case "ceil":
+                            // case "ceil": // (double)
                             default:
                                 x = (double)parseExpression();
                                 if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
@@ -293,5 +310,22 @@ final class point {
     }
     public String draw() {
         return "("+x+","+y+")";
+    }
+}
+final class segment {
+    private point x;
+    private point y;
+    public segment(point x, point y) {
+        this.x = x;
+        this.y = y;
+    }
+    public point getstart() {
+        return x;
+    }
+    public point getend() {
+        return y;
+    }
+    public String draw() {
+        return "segment("+x.draw()+","+y.draw()+")";
     }
 }
