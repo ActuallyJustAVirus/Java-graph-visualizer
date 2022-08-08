@@ -2,6 +2,7 @@ import java.awt.*;
 
 public abstract class element {
     static boolean drawable;
+    boolean hide;
     String name;
     Color color;
     

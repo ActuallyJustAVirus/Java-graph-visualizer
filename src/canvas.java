@@ -1,9 +1,6 @@
 import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.awt.*;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 
 public class canvas extends JPanel {
     static boolean showGrid = true;
@@ -63,13 +60,15 @@ public class canvas extends JPanel {
         }
 
         for (element element : list.elements) {
-            element.draw(paintx, paintx+getWidth(), zoom, paintx, painty, g);
+            if (!element.hide) {
+                element.draw(paintx, paintx+getWidth(), zoom, paintx, painty, g);
+            }
         }
 
         g.setColor(Color.black);
-        g.drawString("zoom: "+String.valueOf(zoom), 10, 25);
-        g.drawString("gridsize: "+String.valueOf(gridsize), 10, 40);
-        g.drawString("scrx: "+String.valueOf(scrx)+" scry: "+String.valueOf(scry), 10, 55);
+        g.drawString("zoom: "+zoom, 10, 25);
+        g.drawString("gridsize: "+gridsize, 10, 40);
+        g.drawString("scrx: "+scrx+" scry: "+scry, 10, 55);
         g.drawString("scroll: "+scroll, 10, 70);
         // infeild.repaint();
     }

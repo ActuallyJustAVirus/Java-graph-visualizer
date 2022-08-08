@@ -7,6 +7,7 @@ public class Esegment extends element {
         this.expression = expression;
         this.name = name;
         color = Color.BLACK;
+        hide = false;
     }
     @Override
     public void draw(int start,int end, float zoom,int scrx,int scry,Graphics g){

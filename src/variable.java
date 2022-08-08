@@ -6,6 +6,7 @@ public class variable extends element{
     public variable(String name, String value) {
         this.name = name;
         this.value = value;
+        hide = true;
     }
     public double getvalue() {
         return (double)eng.eval(value,0);

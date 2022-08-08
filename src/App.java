@@ -14,6 +14,7 @@ public class App {
     ImageIcon img = new ImageIcon("rsc/icon.png");
     public static void main(String[] args) throws Exception {
         App app = new App();
+        // System.out.println(String.valueOf(eng.havex("x+")));
         while (true) {
             app.tick();
             Thread.sleep(60);
@@ -21,7 +22,7 @@ public class App {
     }
     private void tick() {
         canvas.tick();
-        list.repaint();
+        // list.repaint();
     }
     public App() {
         frame.setIconImage(img.getImage());

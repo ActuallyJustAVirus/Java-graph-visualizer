@@ -4,9 +4,8 @@ import java.util.Arrays;
 import java.awt.*;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.*;
+import javax.swing.event.MouseInputListener;
 import javax.swing.*;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 public class list extends JComponent {
@@ -39,6 +38,8 @@ public class list extends JComponent {
         pan.removeAll();
         pan.add(new input());
         pan.setLayout(new GridLayout(20,1));
+        pan.revalidate();
+        pan.repaint();
     }
     public static void add(element element) {
         pan.add(new listelement(element));
@@ -92,7 +93,7 @@ public class list extends JComponent {
 class input extends JComponent {
     JTextField infeild = new JTextField();  
     public input(){
-        infeild.setBounds(5,5, 210,20);
+        infeild.setBounds(5,5, 190,20);
         infeild.addActionListener(
             new ActionListener(){
                 public void actionPerformed(ActionEvent e){
@@ -141,26 +142,62 @@ class input extends JComponent {
 
 class listelement extends JComponent{
     element element;
+    Circle circle;
 
     public listelement(element element) {
         this.element = element;
+        if (!(element instanceof variable)) {
+            circle = new Circle(element.color);
+            add(circle);
+            setLayout(null);
+            circle.setBounds(14, 14, 20, 20);
+            circle.addMouseListener(new MouseInputListener(){
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    if (circle.full) {
+                        circle.full = false;
+                        element.hide = true;
+                    } else {
+                        circle.full = true;
+                        element.hide = false;
+                    }
+                }
+                @Override
+                public void mousePressed(MouseEvent e) {
+                }
+                @Override
+                public void mouseReleased(MouseEvent e) {   
+                }
+                @Override
+                public void mouseEntered(MouseEvent e) {   
+                }
+                @Override
+                public void mouseExited(MouseEvent e) {   
+                }
+                @Override
+                public void mouseDragged(MouseEvent e) {   
+                }
+                @Override
+                public void mouseMoved(MouseEvent e) {
+                }
+            });
+            // addMouseListener(new bettermouselistner());
+        }
     }
     @Override
     public void paint(Graphics g) {
         super.paint(g);
         g.setColor(Color.LIGHT_GRAY);
-        g.drawRect(1,1,getWidth()-2,getHeight()-2);
+        g.drawRect(0,0,getWidth()-1,getHeight()-1);
+        g.setColor(Color.black);
         if (element.color == null) {
-            g.setColor(Color.black);
             g.drawOval(15, 15, 20, 20);
         } else {
-            g.setColor(element.color);
-            g.fillOval(15, 15, 20, 20);
-            g.setColor(Color.black);
+            circle.repaint();
         }
         g.drawString(element.getName()+"="+element.getExp(), 45, 29);
         if (element instanceof variable) {
-            g.drawString(">"+eng.eval(element.getExp(), 0), 45, 44);
+            g.drawString("> "+eng.eval(element.getExp(), 0), 45, 44);
         }
     }
     @Override
@@ -175,14 +212,58 @@ class listelement extends JComponent{
      * Circle
      */
     public class Circle extends JComponent{
-        public Circle() {
-            
+        Color color;
+        boolean full = true;
+
+        public Circle(Color color) {
+            this.color = color;
         }
         @Override
         public void paint(Graphics g) {
-            // TODO Auto-generated method stub
-            super.paint(g);
+            g.setColor(color);
+            if (full) {
+                g.fillOval(0, 0, 20, 20);
+            } else {
+                g.drawOval(0, 0, 20, 20);
+                g.drawOval(1, 1, 18, 18);
+            }
         }
-        
+    }
+}
+
+class bettermouselistner implements MouseInputListener {
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        System.out.println("clicked");
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        System.out.println("pressed");
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        System.out.println("released");
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        System.out.println("entered");
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        System.out.println("exited");
+    }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        System.out.println("Dragged");
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        System.out.println("moved");
     }
 }

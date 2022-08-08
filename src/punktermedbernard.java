@@ -10,6 +10,7 @@ public class punktermedbernard extends element {
         this.y = y;
         this.name = name;
         this.color = color;
+        hide = false;
     }
     @Override
     public void draw(int start,int end, float zoom,int scrx,int scry,Graphics g){

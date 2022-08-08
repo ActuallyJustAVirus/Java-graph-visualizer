@@ -59,7 +59,7 @@ public class eng {
                     if (c < 'z'&&c >= 'a') {c++; nameL.set(i, c); break;} else nameL.set(i, 'a');
                 }
             }
-            if (input.contains("x")&&!input.contains("getx")) return createfunction(name,input);
+            if (eng.havex(input)) return createfunction(name,input);
             Object type = eng.eval(input, 0);
             if (type instanceof point) return createPoint(name, input);
             if (type instanceof segment) return createSegment(name, input);
@@ -89,6 +89,35 @@ public class eng {
     public final static variable createvariable(String name, String input) {
         variabels.add(name);
         return new variable(name,input);
+    }
+    public static boolean havex(final String str){
+        return new Object() {
+            int pos = -1, ch;
+            
+            void nextChar() {
+                ch = (++pos < str.length()) ? str.charAt(pos) : -1;
+            }
+            
+            boolean parse() {
+                for (int i = 0; i < str.length(); i++) {
+                    nextChar();
+                    int startPos = this.pos;
+                    if (isletter(ch)) { // functions
+                        while (isletter(ch)) nextChar();
+                        String func = str.substring(startPos, this.pos);
+                        if (func.equals("x")) return true;
+                    }
+                }
+                return false;
+            }
+
+            boolean isletter(int ch){
+                if ((ch >= 'a' && ch <= 'z')||(ch >= 'A' && ch <= 'Z')) {
+                    return true;
+                }
+                return false;
+            }
+        }.parse();
     }
 
     public static Object eval(final String str, final double xx) { // original code by boann
