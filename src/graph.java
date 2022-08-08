@@ -13,8 +13,8 @@ public class graph extends element{
     @Override
     public void draw(int start,int end, float zoom,int scrx,int scry,Graphics g){
         g.setColor(color);
-        int lastx = 0;
-        int lasty = 0;
+        int lastx = -1;
+        int lasty = -1;
         for (int i = start; i < end; i++) {
             int x = i-scrx;
             int y = (int)Math.round(-(f(i/zoom)*zoom+scry));

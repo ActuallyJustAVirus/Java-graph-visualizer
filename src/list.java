@@ -127,7 +127,7 @@ class input extends JComponent {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        g.drawRect(1, 1,getWidth()-2,getHeight()-2);
+        g.drawRect(0,0,getWidth()-1,getHeight()-1);
         // g.drawRect(5, 5,getWidth()-10,getHeight()-30);
     }
     @Override
