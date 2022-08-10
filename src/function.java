@@ -1,15 +1,13 @@
 import java.awt.*;
 
-public class graph extends element{
-    final static boolean drawable = true;
-    String expression;
-    public graph(String name, String function, Color color){
+public class function extends element{
+    
+    public function(String name, String expression) {
+        super(name, expression);
+        color = new Color((int)(Math.random() * 0x1000000));
         hide = false;
-        this.expression = function;
-        this.color = color;
-        this.name = name;
-        f(1);
     }
+    
     @Override
     public void draw(int start,int end, float zoom,int scrx,int scry,Graphics g){
         g.setColor(color);
@@ -29,8 +27,6 @@ public class graph extends element{
         }
     }
     public double f(double x){
-        String strx = "("+String.format("%.10f", x)+")";
-        strx = strx.replace(",","."); //ch >= 'a' && ch <= 'z'
         return (double)eng.eval(expression,x);
     }
     @Override

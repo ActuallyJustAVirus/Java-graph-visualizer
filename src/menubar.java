@@ -29,7 +29,7 @@ public class menubar extends JMenuBar{
         newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
         newItem.addActionListener(new ActionListener(){
             public void actionPerformed(ActionEvent e) {
-                list.elements = new element[] {new variable("verylongbadname","0")};
+                list.elements = new element[] {new element("verylongbadname","0")};
                 eng.clearall();
                 list.clearall();
             }

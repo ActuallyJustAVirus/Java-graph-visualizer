@@ -98,6 +98,8 @@ public class canvas extends JPanel {
             } else{
                 System.out.println("mouse wheel Down"+rot);
             }
+            if (e.isControlDown()) System.out.println("ctrl");
+            if (e.isShiftDown()) System.out.println("shift");
             scroll += rot;
             // if (!e.isControlDown()){
             // }

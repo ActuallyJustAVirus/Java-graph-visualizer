@@ -13,7 +13,6 @@ eqution
 
 public class eng {
     private static ArrayList<String> variabels = new ArrayList<String>();
-    private static ArrayList<String> points = new ArrayList<String>();
     private static ArrayList<String> functions = new ArrayList<String>();
 
     public static element getType(String input) {
@@ -26,16 +25,9 @@ public class eng {
                 if (exists(name)) throw new RuntimeException("Function '"+name+"' already exist");
                 return createfunction(name,input);
             }
-            Object type = eng.eval(input,0);
-            if (type instanceof point) {
-                if (exists(name)) throw new RuntimeException("Point '"+name+"' already exist");
-                return createPoint(name,input);
-            }
-            if (type instanceof Double) {
-                if (exists(name)) throw new RuntimeException("Variable '"+name+"' already exist");
-                return createvariable(name, input);
-            }
-            throw new RuntimeException("unknown type");
+            // Object type = eng.eval(input,0);
+            if (exists(name)) throw new RuntimeException("Variable '"+name+"' already exist");
+            return createvariable(name, input);
         } else {
             String name = "";
             ArrayList<Character> nameL = new ArrayList<Character>();
@@ -56,39 +48,24 @@ public class eng {
                         break;
                     }
                     char c = nameL.get(i);
-                    if (c < 'z'&&c >= 'a') {c++; nameL.set(i, c); break;} else nameL.set(i, 'a');
+                    if (c < 'z'&&c >= 'a') {c++; nameL.set(i, c); break;} 
+                    else nameL.set(i, 'a');
                 }
             }
             if (eng.havex(input)) return createfunction(name,input);
-            Object type = eng.eval(input, 0);
-            if (type instanceof point) return createPoint(name, input);
-            if (type instanceof segment) return createSegment(name, input);
+            // Object type = eng.eval(input, 0);
             return createvariable(name,input);
         }
     }
-    
-    public final static punktermedbernard createPoint(String name, String input) {
-        Color color = new Color((int)(Math.random() * 0x1000000));
-        String[] vals = input.split(",");
-        vals[0] = vals[0].substring(1);
-        vals[1] = vals[1].substring(0,vals[1].length()-1);
-        points.add(name);
-        return new punktermedbernard(name, vals[0], vals[1], color);
-    }
-    public final static Esegment createSegment(String name, String input) {
-        // points.add(name);
-        return new Esegment(name, input);
-    }
 
-    public final static graph createfunction(String name, String input) {
-        Color color = new Color((int)(Math.random() * 0x1000000));
+    public final static function createfunction(String name, String input) {
         functions.add(name);
-        return new graph(name, input, color);
+        return new function(name, input);
     }
 
-    public final static variable createvariable(String name, String input) {
+    public final static element createvariable(String name, String input) {
         variabels.add(name);
-        return new variable(name,input);
+        return new element(name,input);
     }
     public static boolean havex(final String str){
         return new Object() {
@@ -185,22 +162,6 @@ public class eng {
                 return x;
             }
             
-            // point getPoint() {
-            //     double x;
-            //     double y;
-            //     int startPos = this.pos;
-            //     if (isletter(ch)) { // functions
-            //         while (isletter(ch)) nextChar();
-            //         String var = str.substring(startPos, this.pos);
-            //         if (points.contains(var)) return list.getpoint(var);
-            //         else throw new RuntimeException("Unknown point: " + var);
-            //     }
-            //     if (eat('(')) x = (double)parseExpression(); else throw new RuntimeException("Missing '(' for point");
-            //     if (eat(',')) y = (double)parseExpression(); else throw new RuntimeException("Missing ',' for point");
-            //     if (!eat(')')) throw new RuntimeException("Missing ')' for point");
-            //     return new point(x, y);
-            // }
-
             Object parseFactor() {
                 if (eat('+')) return +(double)parseFactor(); // unary plus
                 if (eat('-')) return -(double)parseFactor(); // unary minus
@@ -254,6 +215,15 @@ public class eng {
                                     case "segment": return new segment(p1,p2);
                                     default: throw new RuntimeException("Missing function: " + func);
                                 }
+                            case "circle":// (point,double)
+                                point c = (point)parseExpression();
+                                double r;
+                                if (eat(',')) r = (Double)parseExpression(); else throw new RuntimeException("Missing ',' in argument to " + func);
+                                if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
+                                switch (func) {
+                                    case "circle": return new circle(c,r);
+                                    default: throw new RuntimeException("Missing function: " + func);
+                                }
                             // case "sqrt":
                             // case "sin":
                             // case "cos":
@@ -285,8 +255,8 @@ public class eng {
                         if (func.equals("pi")) x = 3.14159265359;
                         else if (func.equals("e")) x = 2.71828182846;
                         else if (func.equals("x")) x = xx;
-                        else if (variabels.contains(func)) x = list.getvalue(func);
-                        else if (points.contains(func)) return list.getpoint(func);
+                        else if (variabels.contains(func)) return list.getvalue(func);
+                        // else if (points.contains(func)) return list.getpoint(func);
                         else throw new RuntimeException("Unknown variable: " + func);
                     }
                 } else {
@@ -303,26 +273,13 @@ public class eng {
     public final static void clearall() {
         variabels = new ArrayList<String>();
         functions = new ArrayList<String>();
-        points = new ArrayList<String>();
     }
 
     private final static boolean exists(String name) {
-        if (points.contains(name)) return true;
         if (variabels.contains(name)) return true;
         if (functions.contains(name)) return true;
         return false;
     }
-
-    // public static <T> boolean contains(final T[] array, final T v) {
-    //     if (array instanceof graph[]) {
-    //     }
-    //     for (final T e : array){
-    //         if (e == v || v != null && v.equals(e)){
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
 }
 final class point {
     private double x;
@@ -356,5 +313,22 @@ final class segment {
     }
     public String draw() {
         return "segment("+x.draw()+","+y.draw()+")";
+    }
+}
+final class circle {
+    private double r;
+    private point c;
+    public circle(point c,double r) {
+        this.c = c;
+        this.r = r;
+    }
+    public point getmid() {
+        return c;
+    }
+    public double getradius() {
+        return r;
+    }
+    public String draw() {
+        return "circle("+c.draw()+","+r+")";
     }
 }

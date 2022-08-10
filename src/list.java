@@ -12,8 +12,11 @@ public class list extends JComponent {
     static element[] elements = {
         eng.createfunction("f", "cos(x)*x-x*x"),
         eng.createfunction("fm", "cos(x)-x*sin(x)-2*x"),
-        eng.createPoint("A", "(1,1)"),
+        eng.createvariable("A", "(1,1)"),
         eng.createvariable("test", "-2.3")
+        // eng.createvariable("B", "(test,2)"),
+        // eng.createvariable("a", "segment(A,B)"),
+        // eng.createvariable("c", "circle(A,3)")
     };
     static listelement[] listelements= {};
     static JComponent pan = new JPanel();
@@ -48,10 +51,10 @@ public class list extends JComponent {
         pan.setLayout(new GridLayout(gridrow,1));
     }
 
-    public static double getvalue(String name) {
+    public static Object getvalue(String name) {
         for (int i = 0; i < elements.length; i++) {
-            if (elements[i] instanceof variable) {
-                variable var = (variable) elements[i];
+            if (!(elements[i] instanceof function)) {
+                element var = elements[i];
                 if (var.name.equals(name)) {
                     return var.getvalue();
                 } 
@@ -61,8 +64,8 @@ public class list extends JComponent {
     }
     public static double getvalue(String name,Double x) {
         for (int i = 0; i < elements.length; i++) {
-            if (elements[i] instanceof graph) {
-                graph var = (graph) elements[i];
+            if (elements[i] instanceof function) {
+                function var = (function) elements[i];
                 if (var.name.equals(name)) {
                     return var.f(x);
                 } 
@@ -70,17 +73,7 @@ public class list extends JComponent {
         }
         throw new RuntimeException("No function called: " + name);
     }
-    public static point getpoint(String name) {
-        for (int i = 0; i < elements.length; i++) {
-            if (elements[i] instanceof punktermedbernard) {
-                punktermedbernard var = (punktermedbernard) elements[i];
-                if (var.name.equals(name)) {
-                    return var.getvalue();
-                } 
-            }
-        }
-        throw new RuntimeException("No point called: " + name);
-    }
+
     @Override
     public Dimension getMinimumSize() {
         return new Dimension(220,50);
@@ -107,7 +100,7 @@ class input extends JComponent {
                         list.pans.repaint();
                         // System.out.println("b");
                     } else {
-                        list.elements = new element[] {new variable("verylongbadname","0")};
+                        list.elements = new element[] {new element("verylongbadname","0")};
                         eng.clearall();
                         list.clearall();
                     }
@@ -146,43 +139,40 @@ class listelement extends JComponent{
 
     public listelement(element element) {
         this.element = element;
-        if (!(element instanceof variable)) {
-            circle = new Circle(element.color);
-            add(circle);
-            setLayout(null);
-            circle.setBounds(14, 14, 20, 20);
-            circle.addMouseListener(new MouseInputListener(){
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    if (circle.full) {
-                        circle.full = false;
-                        element.hide = true;
-                    } else {
-                        circle.full = true;
-                        element.hide = false;
-                    }
+        circle = new Circle(element.color);
+        add(circle);
+        setLayout(null);
+        circle.setBounds(14, 14, 20, 20);
+        circle.addMouseListener(new MouseInputListener(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (circle.full) {
+                    circle.full = false;
+                    element.hide = true;
+                } else {
+                    circle.full = true;
+                    element.hide = false;
                 }
-                @Override
-                public void mousePressed(MouseEvent e) {
-                }
-                @Override
-                public void mouseReleased(MouseEvent e) {   
-                }
-                @Override
-                public void mouseEntered(MouseEvent e) {   
-                }
-                @Override
-                public void mouseExited(MouseEvent e) {   
-                }
-                @Override
-                public void mouseDragged(MouseEvent e) {   
-                }
-                @Override
-                public void mouseMoved(MouseEvent e) {
-                }
-            });
-            // addMouseListener(new bettermouselistner());
-        }
+            }
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {   
+            }
+            @Override
+            public void mouseEntered(MouseEvent e) {   
+            }
+            @Override
+            public void mouseExited(MouseEvent e) {   
+            }
+            @Override
+            public void mouseDragged(MouseEvent e) {   
+            }
+            @Override
+            public void mouseMoved(MouseEvent e) {
+            }
+        });
     }
     @Override
     public void paint(Graphics g) {
@@ -196,8 +186,10 @@ class listelement extends JComponent{
             circle.repaint();
         }
         g.drawString(element.getName()+"="+element.getExp(), 45, 29);
-        if (element instanceof variable) {
-            g.drawString("> "+eng.eval(element.getExp(), 0), 45, 44);
+        if (!(element instanceof function)) {
+            if (element.lastvalue instanceof Double) g.drawString("> "+element.lastvalue, 45, 44);
+            
+            // else g.drawString("> "+element.lastvalue.draw(), 45, 44);
         }
     }
     @Override
@@ -221,6 +213,7 @@ class listelement extends JComponent{
         @Override
         public void paint(Graphics g) {
             g.setColor(color);
+            if (color == null) return;
             if (full) {
                 g.fillOval(0, 0, 20, 20);
             } else {
