@@ -2,7 +2,7 @@ GeoMaster
 =========
 A Java graph visualizer
 
-## Comands
+## Functions
 * getx(Point)
 * gety(Point)
 * max(Number,Number)
@@ -17,6 +17,16 @@ A Java graph visualizer
 * round(Number)
 * floor(Number)
 * ceil(Number)
+<br><br>
+
+## Elements
+* segment(Point,Point)
+* circle(Point,Number)
+* vector(Number,Number)
+<br><br>
+
+## Commands
+* /clear
 <br><br>
 
 ### Operators

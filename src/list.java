@@ -91,14 +91,19 @@ class input extends JComponent {
             new ActionListener(){
                 public void actionPerformed(ActionEvent e){
                     String text = infeild.getText();
-                    // System.out.println(newElement);
-                    if (!text.equals("clear")) {
-                        element newElement = eng.getType(text);
-                        list.elements = addelement(list.elements, newElement);
-                        list.add(newElement);
-                        list.pans.revalidate();
-                        list.pans.repaint();
-                        // System.out.println("b");
+                    if (text.substring(0, 0).equals("/")) {
+                        text = text.substring(1);
+                        switch (text) {
+                            case "clear":
+                                element newElement = eng.getType(text);
+                                list.elements = addelement(list.elements, newElement);
+                                list.add(newElement);
+                                list.pans.revalidate();
+                                list.pans.repaint();
+                                break;
+                            default:
+                                throw new RuntimeException("Unknown command: " + text);
+                        }
                     } else {
                         list.elements = new element[] {new element("verylongbadname","0")};
                         eng.clearall();

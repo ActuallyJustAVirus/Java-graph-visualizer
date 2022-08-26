@@ -183,80 +183,32 @@ public class eng {
                     while (isletter(ch)) nextChar();
                     String func = str.substring(startPos, this.pos);
                     if (eat('(')) {
-                        // ArrayList<Object> inputList = new ArrayList<Object>();
-                        // for (;;){
-                        //     inputList.add(parseExpression());
-                        //     if (!eat(',')) break;
-                        // }
-                        // if (!eat(')')) throw new RuntimeException("Missing ')' after point argument to " + func);
-                        
+                        ArrayList<Object> in = new ArrayList<Object>();
+                        for (;;){
+                            in.add(parseExpression());
+                            if (!eat(',')) break;
+                        }
+                        if (!eat(')')) throw new RuntimeException("Missing ')' after point argument to " + func);
                         switch (func) {
-                            case "getx":
-                            case "gety":// (point)
-                                point p = (point)parseExpression();
-                                if (!eat(')')) throw new RuntimeException("Missing ')' after point argument to " + func);
-                                switch (func) {
-                                    case "getx": x = p.getX(); break;
-                                    case "gety": x = p.getY(); break;
-                                    default: throw new RuntimeException("Missing point function: " + func);
-                                }
-                                break;
-                            case "vector":
-                            case "max":
-                            case "min":// (double,double)
-                                x = (double)parseExpression();
-                                double y;
-                                if (eat(',')) y = (double)parseExpression(); else throw new RuntimeException("Missing ',' in argument to " + func);
-                                if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
-                                switch (func) {
-                                    case "max": x = Math.max(x,y); break;
-                                    case "min": x = Math.min(x,y); break;
-                                    case "vector": return new vector(x, y);
-                                    default: throw new RuntimeException("No -1");
-                                }
-                                break;
-                            case "segment":// (point,point)
-                                point p1 = (point)parseExpression();
-                                point p2;
-                                if (eat(',')) p2 = (point)parseExpression(); else throw new RuntimeException("Missing ',' in argument to " + func);
-                                if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
-                                switch (func) {
-                                    case "segment": return new segment(p1,p2);
-                                    default: throw new RuntimeException("Missing function: " + func);
-                                }
-                            case "circle":// (point,double)
-                                point c = (point)parseExpression();
-                                double r;
-                                if (eat(',')) r = (Double)parseExpression(); else throw new RuntimeException("Missing ',' in argument to " + func);
-                                if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
-                                switch (func) {
-                                    case "circle": return new circle(c,r);
-                                    default: throw new RuntimeException("Missing function: " + func);
-                                }
-                            // case "sqrt":
-                            // case "sin":
-                            // case "cos":
-                            // case "tan":
-                            // case "sign":
-                            // case "abs":
-                            // case "log":
-                            // case "round":
-                            // case "floor":
-                            // case "ceil": // (double)
-                            default:
-                                x = (double)parseExpression();
-                                if (!eat(')')) throw new RuntimeException("Missing ')' after argument to " + func);
-                                if (func.equals("sqrt")) x = Math.sqrt(x);
-                                else if (func.equals("sin")) x = Math.sin(x);
-                                else if (func.equals("cos")) x = Math.cos(x);
-                                else if (func.equals("tan")) x = Math.tan(x);
-                                else if (func.equals("sign")) x = Math.signum(x);
-                                else if (func.equals("abs")) x = Math.abs(x);
-                                else if (func.equals("log")) x = Math.log10(x);
-                                else if (func.equals("round")) x = Math.round(x);
-                                else if (func.equals("floor")) x = Math.floor(x);
-                                else if (func.equals("ceil")) x = Math.ceil(x);
-                                else if (functions.contains(func)) x = list.getvalue(func,x);
+                            case "getx": x = ((point)in.get(0)).getX(); break;
+                            case "gety": x = ((point)in.get(0)).getY(); break;
+                            case "max": x = Math.max((Double)in.get(0),(Double)in.get(1)); break;
+                            case "min": x = Math.min((Double)in.get(0),(Double)in.get(1)); break;
+                            case "vector": return new vector((Double)in.get(0),(Double)in.get(1));
+                            case "segment": return new segment((point)in.get(0),(point)in.get(1));
+                            case "circle": return new circle((point)in.get(0),(Double)in.get(1));
+                            case "sqrt": x = Math.sqrt((Double)in.get(0)); break;
+                            case "sin": x = Math.sin((Double)in.get(0)); break;
+                            case "cos": x = Math.cos((Double)in.get(0)); break;
+                            case "tan": x = Math.tan((Double)in.get(0)); break;
+                            case "sign": x = Math.signum((Double)in.get(0)); break;
+                            case "abs": x = Math.abs((Double)in.get(0)); break;
+                            case "log": x = Math.log10((Double)in.get(0)); break;
+                            case "round": x = Math.round((Double)in.get(0)); break;
+                            case "floor": x = Math.floor((Double)in.get(0)); break;
+                            case "ceil": x = Math.ceil((Double)in.get(0)); break;
+                            default: // throw new RuntimeException("Missing function called: " + func);
+                                if (functions.contains(func)) x = list.getvalue(func,(double)in.get(0));
                                 else throw new RuntimeException("Unknown function: " + func);
                                 break;
                         }
