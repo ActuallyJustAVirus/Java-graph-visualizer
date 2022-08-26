@@ -1,7 +1,7 @@
 // import java.util.HashMap;
 // import java.util.ArrayList;
 // import java.util.Arrays;
-import java.awt.*;
+// import java.awt.*;
 import java.util.ArrayList;
 // import java.util.Arrays;
 /*
@@ -183,6 +183,13 @@ public class eng {
                     while (isletter(ch)) nextChar();
                     String func = str.substring(startPos, this.pos);
                     if (eat('(')) {
+                        // ArrayList<Object> inputList = new ArrayList<Object>();
+                        // for (;;){
+                        //     inputList.add(parseExpression());
+                        //     if (!eat(',')) break;
+                        // }
+                        // if (!eat(')')) throw new RuntimeException("Missing ')' after point argument to " + func);
+                        
                         switch (func) {
                             case "getx":
                             case "gety":// (point)
@@ -194,6 +201,7 @@ public class eng {
                                     default: throw new RuntimeException("Missing point function: " + func);
                                 }
                                 break;
+                            case "vector":
                             case "max":
                             case "min":// (double,double)
                                 x = (double)parseExpression();
@@ -203,6 +211,7 @@ public class eng {
                                 switch (func) {
                                     case "max": x = Math.max(x,y); break;
                                     case "min": x = Math.min(x,y); break;
+                                    case "vector": return new vector(x, y);
                                     default: throw new RuntimeException("No -1");
                                 }
                                 break;
@@ -288,12 +297,8 @@ final class point {
         this.x = x;
         this.y = y;
     }
-    public double getX() {
-        return x;
-    }
-    public double getY() {
-        return y;
-    }
+    public double getX() {return x;}
+    public double getY() {return y;}
     public String draw() {
         return "("+x+","+y+")";
     }
@@ -305,12 +310,8 @@ final class segment {
         this.x = x;
         this.y = y;
     }
-    public point getstart() {
-        return x;
-    }
-    public point getend() {
-        return y;
-    }
+    public point getstart() {return x;}
+    public point getend() {return y;}
     public String draw() {
         return "segment("+x.draw()+","+y.draw()+")";
     }
@@ -322,13 +323,22 @@ final class circle {
         this.c = c;
         this.r = r;
     }
-    public point getmid() {
-        return c;
-    }
-    public double getradius() {
-        return r;
-    }
+    public point getmid() {return c;}
+    public double getradius() {return r;}
     public String draw() {
         return "circle("+c.draw()+","+r+")";
+    }
+}
+final class vector {
+    private double x;
+    private double y;
+    public vector(double x,double y) {
+        this.x = x;
+        this.y = y;
+    }
+    public double getX() {return x;}
+    public double getY() {return y;}
+    public String draw() {
+        return "vector("+x+","+y+")";
     }
 }

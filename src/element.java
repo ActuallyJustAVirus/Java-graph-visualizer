@@ -14,7 +14,7 @@ public class element {
             hide = true;
         } else {
             hide = false;
-            color = new Color((int)(Math.random() * 0x1000000));
+            color = Color.black;//new Color((int)(Math.random() * 0x1000000));
         }
     }
     
@@ -39,6 +39,11 @@ public class element {
             double r = circle.getradius();
             double scrr = r*zoom;
             g.drawOval((int)(c.getX()*zoom-scrr-scrx),(int) (-c.getY()*zoom-scrr-scry), (int)(scrr*2), (int)(scrr*2));
+        } else if (lastvalue instanceof vector) {
+            g.setColor(color);
+            lastvalue = eng.eval(expression, 0);
+            vector vector = (vector)lastvalue;
+            g.drawLine(-scrx, -scry, (int)(vector.getX()*zoom-scrx), (int)(-vector.getY()*zoom-scry));
         }
 
     }
